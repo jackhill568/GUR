@@ -4,6 +4,11 @@ from django.db import models
 
 
 class User(models.Model):
+    
+    PERMISSION_LEVELS = [
+            ("user", 2),
+            ("admin", 1)
+    ]
 
     first_name  = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
@@ -14,7 +19,7 @@ class User(models.Model):
     profile_picture = models.ImageField()
 
     score = models.IntegerField(default=0)
-    permission_level = models.IntegerField(default=2)
+    permission_level = models.IntegerField(default=2, choices=PERMISSION_LEVELS)
 
     def __str__(self):
         return self.nickname
@@ -28,21 +33,12 @@ class Ingredient(models.Model):
         return self.name
 
 
-class RecipeIngredients(models.Model):
-    
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-
-    quantity = models.CharField(max_lenght=30)
-    unit = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.quantity + self.unit
-
-
 class Category(models.Model):
 
     name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -58,9 +54,28 @@ class Recipe(models.Model):
         return self.name
 
 
+class RecipeIngredients(models.Model):
+    
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    quantity = models.CharField(max_length=30)
+    unit = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.quantity + self.unit
+
+
+
 class Review(models.Model):
 
-    RATINGS = [ 1, 2, 3, 4, 5]
+    RATINGS = (
+        ("1", 1),
+        ("2", 2),
+        ("3", 3),
+        ("4", 4),
+        ("5", 5)
+    )
 
     rating = models.IntegerField(choices=RATINGS)
     
@@ -68,6 +83,9 @@ class Review(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user) + ":" + str(self.recipe)
     
 
 
