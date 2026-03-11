@@ -1,5 +1,6 @@
 from django.db import models
 
+from django.template.defaultfilters import slugify
 # Create your models here.
 
 
@@ -13,6 +14,7 @@ class User(models.Model):
     first_name  = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     nickname = models.CharField(max_length=128, unique=True)
+
 
     email = models.CharField(max_length=128)
     password = models.CharField(max_length=128)
@@ -47,6 +49,15 @@ class Recipe(models.Model):
     picture = models.ImageField()
     description = models.CharField(max_length = 500)
     method = models.CharField(max_length = 500)
+    date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User) # dont think we need delete on cascade
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Recipe, self).save(*args, **kwargs)   
+
+
 
     category = models.ManyToManyField(Category)
 
