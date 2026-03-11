@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
 
-from django.db.Models import Avg
+from django.db.models import Avg
 
 
 from datetime import timedelta
@@ -27,7 +27,7 @@ def home(request):
 
     users_in_month = User.objects.filter(recipe__date__gte=month).distinct()
     
-    CookoftheMonth = users_in_month.annotate(avg_rating=Avg("recipes__reviews__rating").order_by("-avg_rating").first()
+    CookoftheMonth = users_in_month.annotate(avg_rating=Avg("recipe__review__rating")).order_by("-avg_rating").first()
 
     context_dict = {}
     context_dict["RecipeoftheWeek"] = RecipeoftheWeek

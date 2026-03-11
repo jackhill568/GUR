@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.utils import timezone
+
 from django.template.defaultfilters import slugify
 # Create your models here.
 
@@ -49,9 +51,9 @@ class Recipe(models.Model):
     picture = models.ImageField()
     description = models.CharField(max_length = 500)
     method = models.CharField(max_length = 500)
-    date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User) # dont think we need delete on cascade
-    slug = models.SlugField(unique=True)
+    date = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1) # dont think we need delete on cascade
+    slug = models.SlugField(unique=True, default="defualt-recipe")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

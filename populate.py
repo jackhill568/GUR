@@ -1,4 +1,5 @@
 import os
+import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                       "GUR.settings")
@@ -242,6 +243,10 @@ def populate():
     for data in CATEGORY_DATA:
         add_category(data["name"])
 
+    print("adding users")
+    for data in USER_DATA:
+        add_user(data)
+
     print("adding recipes")
     for data in RECIPE_DATA:
         add_recipe(data)
@@ -250,9 +255,6 @@ def populate():
     for data in RECIPE_INGREDIENT_DATA:
         add_recipe_ingredients(data)
 
-    print("adding users")
-    for data in USER_DATA:
-        add_user(data)
 
     print("adding reviews")
     for data in REVIEW_DATA:
@@ -273,6 +275,7 @@ def add_recipe(data: dict[str,str]):
     r.picture = data["picture"]
     r.description = data["description"]
     r.method = data["method"]
+    r.user = random.choice(list(User.objects.all()))
     r.save()
     r.category.set(Category.objects.filter(name__in=data["categories"]))
     return r
