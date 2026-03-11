@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+
+{% load staticfiles %}
+
+{% block title_block %}
+	{% if user %}
+		user.name
+	{% else %}
+		Unknown User
+	{% endif %}
+{% endblock %}
+	
+
+{% block body_block %}
+	
+	{% if user %}
+
+		<h1>{{ user.nickname }}</h1>
+		<img src="{{ MEDIA_URL }}images/{{ user.profile_picture }}"
+				alt="user profile picture" />
+		
+		<!--About me-->
+		<h2>About {{ user.first_name }}</h2>
+		something about the user
+
+		
+		<h2>{{ user.first_name }}'s recipes</h2>
+
+
+
+
+		<h2>{{ user.first_name }}'s comments</h2>
+
+
+		
+		{% if user.is_authenticated %} <!-- rate/ comment-->
+			Report
+		{% endif %}
+
+	{% else %}
+			Unknown Recipe
+	{% endif %}
+
+
+
+{% endblock %}
