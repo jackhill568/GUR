@@ -5,7 +5,7 @@ app_name = 'GUR'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('', views.add_recipe, name='upload a recipe'),
+    path('upload', views.add_recipe, name='upload a recipe'),
     path('register/', views.register, name='register'),
     path('recipe/search', views.register, name='search'),
     path('register/', views.register, name='register'),
