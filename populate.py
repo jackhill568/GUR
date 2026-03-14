@@ -1,4 +1,5 @@
 import os
+import random
 
 from main.helpers import *
 
@@ -241,6 +242,10 @@ def populate():
     for data in CATEGORY_DATA:
         add_category(data["name"])
 
+    print("adding users")
+    for data in USER_DATA:
+        add_user(data)
+
     print("adding recipes")
     for data in RECIPE_DATA:
         add_recipe(data)
@@ -249,9 +254,6 @@ def populate():
     for data in RECIPE_INGREDIENT_DATA:
         add_recipe_ingredients(data)
 
-    print("adding users")
-    for data in USER_DATA:
-        add_user(data)
 
     print("adding reviews")
     for data in REVIEW_DATA:

@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+
+{% load staticfiles %}
+
+{% block title_block %}
+	Homepage	
+{% endblock %}
+
+
+{% block body_block %}
+	
+
+	This is a description on the home page about the website
+
+	<br />	
+	<!--cook of the month-->
+
+	{% if CookoftheMonth %}
+	{{ CookoftheMonth.first_name }}
+	{% endif %}
+
+	<br />	
+	<img src="{{ MEDIA_URL }}images/standin.jpg"
+				alt="Cook of the month profile picture" />
+	
+	<br />	
+	<br />	
+
+	<!--recipe of the week-->
+	
+	{% if RecipeoftheWeek %}
+		{{ RecipeoftheWeek.name }}
+	{% endif %}
+
+	<br />	
+
+	<img src="{{ MEDIA_URL }}images/standin.jpg"
+				alt="Picture of the recipe of the week" />
+	
+	<br />	
+
+
+{% endblock %}
+
+
