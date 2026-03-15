@@ -9,8 +9,8 @@ from django.template.defaultfilters import slugify
 class User(models.Model):
     
     PERMISSION_LEVELS = [
-            ("user", 2),
-            ("admin", 1)
+            (2, "user"),
+            (1, "admin")
     ]
 
     first_name  = models.CharField(max_length=128)
