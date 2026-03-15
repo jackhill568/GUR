@@ -46,16 +46,14 @@ def view_recipe(request,recipe_slug):
         context_dict["recipe"] = None
     return render(request, 'main/recipe.html', context=context_dict)
 
-def view_user(request, user_nickname):
+def view_user(request, user_id):
     context_dict = {}
     try:
-        user = User.objects.get(nickname=user_nickname)
+        user = User.objects.get(id=user_id)
         context_dict["user"] = user
     except User.DoesNotExist:
         context_dict["user"] = None
     return render(request, 'main/user.html', context=context_dict)
-
-
 
 @login_required
 def add_recipe(request):
