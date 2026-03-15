@@ -15,6 +15,26 @@ from django.utils import timezone
 
 from main.models import *
 
+from haystack.query import SearchQuerySet
+from django.core.paginator import Paginator
+
+def search_users(request):
+    query = request.GET.get('q', '')
+    page_number = request.GET.get('page', 1)
+    
+    if query:
+        results = SearchQuerySet().filter(content=query)
+    else:
+        results = SearchQuerySet().all()
+    
+    paginator = Paginator(results, 10)  # 10 results per page
+    page = paginator.get_page(page_number)
+    
+    return render(request, 'main/search.html', {
+        'query': query,
+        'page': page
+    })
+
 def home(request):
     
     current_time = timezone.now()
