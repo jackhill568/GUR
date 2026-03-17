@@ -1,2 +1,4 @@
 django==2.1.5
 pillow==5.4.1
+django-haystack>=2.8,<3.0
+whoosh

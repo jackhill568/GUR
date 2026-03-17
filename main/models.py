@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.template.defaultfilters import slugify
 # Create your models here.
 
+from django.urls import reverse
 
 class User(models.Model):
     
@@ -25,6 +26,9 @@ class User(models.Model):
 
     score = models.IntegerField(default=0)
     permission_level = models.IntegerField(default=2, choices=PERMISSION_LEVELS)
+
+    def get_absolute_url(self):
+        return reverse('GUR:view_user', args=[self.id])
 
     def __str__(self):
         return self.nickname
@@ -60,9 +64,10 @@ class Recipe(models.Model):
         self.slug = slugify(self.name)
         super(Recipe, self).save(*args, **kwargs)   
 
-
-
     category = models.ManyToManyField(Category)
+
+    def get_absolute_url(self):
+        return reverse('GUR:view_recipe', args=[self.slug])
 
     def __str__(self):
         return self.name
@@ -98,9 +103,12 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+
+    def get_absolute_url(self):
+        return reverse('GUR:view_recipe', args=[self.recipe.slug])
+
     def __str__(self):
         return str(self.user) + ":" + str(self.recipe)
-    
 
 
 
