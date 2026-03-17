@@ -26,7 +26,7 @@
 
             {% for result in page.object_list %}
                 <p>
-				<li><a href="{% url 'GUR:view_user' result.object.id %}">{{ results.object.nickname }}</a></li>
+				<li><a href="{{ result.object.get_absolute_url}}">{{ result.object }}</a></li>
                 </p>
             {% empty %}
                 <p>No results found.</p>

@@ -1,0 +1,12 @@
+{{ object.name }}
+{{ object.description }}
+{{ object.method }}
+
+{% for cat in object.category.all %}
+{{ cat.name }}
+{% endfor %}
+
+
+{% for ri in object.recipeingredients_set.all %}
+{{ ri.ingredient.name }}
+{% endfor %}
