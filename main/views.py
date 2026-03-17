@@ -61,21 +61,31 @@ def view_recipe(request,recipe_slug):
     context_dict = {}
     try:
         recipe = Recipe.objects.get(slug=recipe_slug)
+        recipeIngredients = RecipeIngredients.objects.filter(recipe=recipe)
+        recipeReviews = Review.objects.filter(recipe=recipe)
         context_dict["recipe"] = recipe
+        context_dict["reviews"] = recipeReviews
+        context_dict["ingredients"] = recipeIngredients
     except Recipe.DoesNotExist:
         context_dict["recipe"] = None
+        context_dict["reviews"] = None
+        context_dict["ingredients"] = None
     return render(request, 'main/recipe.html', context=context_dict)
 
-def view_user(request, user_nickname):
+def view_user(request, user_id):
     context_dict = {}
     try:
-        user = User.objects.get(nickname=user_nickname)
+        user = User.objects.get(id=user_id)
+        userRecipes = Recipe.objects.filter(user=user)
+        userReviews = Review.objects.filter(user=user)
         context_dict["user"] = user
+        context_dict["recipes"] = userRecipes
+        context_dict["reviews"] = userReviews
     except User.DoesNotExist:
         context_dict["user"] = None
+        context_dict["recipes"] = None
+        context_dict["reviews"] = None
     return render(request, 'main/user.html', context=context_dict)
-
-
 
 @login_required
 def add_recipe(request):

@@ -4,7 +4,7 @@
 
 {% block title_block %}
 	{% if user %}
-		user.name
+	{{user.nickname}}
 	{% else %}
 		Unknown User
 	{% endif %}
@@ -21,26 +21,38 @@
 		
 		<!--About me-->
 		<h2>About {{ user.first_name }}</h2>
-		something about the user
-
+		{{ user.about }}
 		
 		<h2>{{ user.first_name }}'s recipes</h2>
+		{% if recipes %}
+			
+			{% for recipe in recipes|slice:":5" %}
+					<li><a href="{% url 'GUR:view_recipe' recipe.slug %}">{{ recipe.name }}</a></li>
+			{% endfor %}
+		{% else %}
+			{{ user.first_name }} doesn't have any recipes yet
+		{% endif %}
 
 
+		<h2>{{ user.first_name }}'s reviews</h2>
+		{% if reviews %}
+			{% for review in reviews|slice:":5" %}
+			<li> 
+				Rating: {{ review.rating }} /5
+				Comment: {{ review.description }}
+				Written by: <a href="{% url 'GUR:view_user' user.id %}">{{ user.nickname }}</a>
+			</li>
+			{% endfor %}
+		{% else %}
+			No Reviews Yet
+		{% endif %}
 
-
-		<h2>{{ user.first_name }}'s comments</h2>
-
-
-		
 		{% if user.is_authenticated %} <!-- rate/ comment-->
 			Report
 		{% endif %}
 
 	{% else %}
-			Unknown Recipe
+			Unknown User
 	{% endif %}
-
-
 
 {% endblock %}

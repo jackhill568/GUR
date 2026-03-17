@@ -16,19 +16,56 @@
 	{% if recipe %}
 
 		<h1>{{ recipe.name }}</h1>
+		{{ recipe.description }}
+		<br />
+		Created by <a href="{% url 'GUR:view_user' recipe.user.id %}">{{ recipe.user.nickname }}</a> on {{ recipe.date}}.
+		<br />
 		<img src="{{ MEDIA_URL }}images/{{ recipe.picture }}"
 				alt="Recipe Picture" />
 		
 
 		<!-- ingredients -->
 
-
+		<h2>Ingredients</h2>
+		{% if ingredients %}
+			{% for i in ingredients %}
+			<li> {{ i.ingredient.name }} {{ i.quantity}} {{i.unit}}</li>
+			{% endfor %}
+		{% else %}
+			No Ingredients Found
+		{% endif %}
+		 
 
 		<!-- method -->
+
+		<h2>Method</h2>
+		{{ recipe.method }}
+
 		
 		{% if user.is_authenticated %} <!-- rate/ comment-->
 			Rate
 		{% endif %}
+
+		<h2>reviews</h2>
+		{% if reviews %}
+			{% for review in reviews|slice:":5" %}
+			<li> 
+				Rating: {{ review.rating }} /5
+				Comment: {{ review.description }}
+				Written by: <a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.nickname }}</a>
+			</li>
+			{% endfor %}
+		{% else %}
+			No Reviews Yet
+		{% endif %}
+
+		{% if user.is_authenticated %} <!-- rate/ comment-->
+			Report
+		{% endif %}
+
+
+
+
 
 	{% else %}
 			Unknown Recipe
