@@ -9,9 +9,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('recipe/<slug:recipe_slug>/', views.view_recipe, name='view_recipe'),
     path('user/<int:user_id>/', views.view_user, name='view_user'),
-    path('recipe/search', views.register, name='search'),
+    path('search', views.search, name='search'),
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
-    path('search/', views.search_users, name='search_users'),
     path('logout/', views.user_logout, name='logout'),
 ]
