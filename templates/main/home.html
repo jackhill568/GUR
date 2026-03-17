@@ -16,20 +16,24 @@
 	<!--cook of the month-->
 
 	{% if CookoftheMonth %}
-	{{ CookoftheMonth.first_name }}
+		Cook of the Month: 
+		<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
 	{% endif %}
+
 
 	<br />	
 	<img src="{{ MEDIA_URL }}images/standin.jpg"
 				alt="Cook of the month profile picture" />
 	
 	<br />	
-	<br />	
+
 
 	<!--recipe of the week-->
 	
 	{% if RecipeoftheWeek %}
-		{{ RecipeoftheWeek.name }}
+		Recipe of the Week: 
+		<a href="{% url 'GUR:view_recipe' RecipeoftheWeek.slug %}">{{ RecipeoftheWeek.name }}</a>
+
 	{% endif %}
 
 	<br />	
