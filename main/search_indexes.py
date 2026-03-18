@@ -1,6 +1,15 @@
 import datetime
 from haystack import indexes
-from main.models import User, Recipe, Review
+from main.models import User, Recipe, Review, Category
+
+
+class CategoryIndex(indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+    name = indexes.CharField(model_attr='name')
+
+    def get_model(self):
+        return Category
 
 class UserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
