@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title_block %}
+	Register
+{% endblock %}
+
+{% block body_block %}
+
+	<h1>Register for Glasgow University Recipes</h1>
+
+	{% if registered %}
+		<p>Thank you for registering! You can now <a href="{% url 'GUR:login' %}">login</a>.</p>
+	{% else %}
+		<form id="register_form" method="post" action="{% url 'GUR:register' %}" enctype="multipart/form-data">
+			{% csrf_token %}
+
+			{{ user_form.as_p }}
+			{{ profile_form.as_p }}
+
+			<input type="submit" value="Register" />
+		</form>
+	{% endif %}
+
+{% endblock %}
