@@ -1,19 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
-from django.shortcuts import redirect
 from django.urls import reverse
 
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from django.db.models import Avg
-
 
 from datetime import timedelta
 
 from django.utils import timezone
 
-from main.models import *
+from main.models import UserProfile, Recipe, RecipeIngredients, Review
+from main.forms import UserForm, UserProfileForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
@@ -45,7 +44,7 @@ def home(request):
 
     RecipeoftheWeek = Recipe.objects.filter(date__gte=week).annotate(avg_rating=Avg("review__rating")).order_by('-avg_rating').first()
 
-    users_in_month = User.objects.filter(recipe__date__gte=month).distinct()
+    users_in_month = UserProfile.objects.filter(recipe__date__gte=month).distinct()
     
     CookoftheMonth = users_in_month.annotate(avg_rating=Avg("recipe__review__rating")).order_by("-avg_rating").first()
 
@@ -75,14 +74,14 @@ def view_recipe(request,recipe_slug):
 def view_user(request, user_id):
     context_dict = {}
     try:
-        user = User.objects.get(id=user_id)
-        userRecipes = Recipe.objects.filter(user=user)
-        userReviews = Review.objects.filter(user=user)
-        context_dict["user"] = user
+        profile = UserProfile.objects.get(id=user_id)
+        userRecipes = Recipe.objects.filter(user=profile)
+        userReviews = Review.objects.filter(user=profile)
+        context_dict["profile"] = profile
         context_dict["recipes"] = userRecipes
         context_dict["reviews"] = userReviews
-    except User.DoesNotExist:
-        context_dict["user"] = None
+    except UserProfile.DoesNotExist:
+        context_dict["profile"] = None
         context_dict["recipes"] = None
         context_dict["reviews"] = None
     return render(request, 'main/user.html', context=context_dict)
@@ -91,14 +90,61 @@ def view_user(request, user_id):
 def add_recipe(request):
     return HttpResponse("upload recipe")
 
+
 def register(request):
-    return HttpResponse("sign up")
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+
+            registered = True
+        else:
+            print(user_form.errors, profile_form.errors)
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+    return render(request, 'main/register.html', context={
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'registered': registered,
+    })
+
 
 def user_login(request):
-    return HttpResponse("login")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                login(request, user)
+                return redirect(reverse('GUR:home'))
+            else:
+                return HttpResponse("Your account is disabled.")
+        else:
+            return render(request, 'main/login.html', context={
+                'error': 'Invalid username or password.',
+            })
+    else:
+        return render(request, 'main/login.html')
+
 
 @login_required
 def user_logout(request):
-    return HttpResponse("logout")
+    logout(request)
+    return redirect(reverse('GUR:home'))
 
 

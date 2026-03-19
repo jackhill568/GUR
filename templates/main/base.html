@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 
 <html>
 	<head lang="en">
@@ -21,6 +21,9 @@
 				{% if user.is_authenticated %}
 					<li><a href="{% url 'GUR:logout' %}">Logout</a></li>
 					<li><a href="{% url 'GUR:upload' %}">Upload a Recipe</a></li>
+					{% if user.userprofile %}
+					<li><a href="{% url 'GUR:view_user' user.userprofile.id %}">My Profile</a></li>
+					{% endif %}
 				{% else %}
 					<li><a href="{% url 'GUR:register' %}">Sign Up</a></li>
 					<li><a href="{% url 'GUR:login' %}">Login</a></li>

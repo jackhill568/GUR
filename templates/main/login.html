@@ -1,6 +1,6 @@
 {% extends 'main/base.html' %}
 
-{% load staticfiles %}
+{% load static %}
 
 {% block title_block %}
 	Login
@@ -8,16 +8,23 @@
 
 
 {% block body_block %}
-	
+
 	<h1>Login to Glasgow University Recipes</h1>
+
+	{% if error %}
+		<p><strong>{{ error }}</strong></p>
+	{% endif %}
+
 	<form id="login_form" method="post" action="{% url 'GUR:login' %}">
 		{% csrf_token %}
 		Username: <input type="text" name="username" value="" size="50" />
 		<br />
-			Password: <input type="password" name="password" value="" size="50" />
+		Password: <input type="password" name="password" value="" size="50" />
 		<br />
 		<input type="submit" value="submit" />
 	</form>
+
+	<p>Not a member? <a href="{% url 'GUR:register' %}">Register here</a>.</p>
 
 {% endblock %}
 
