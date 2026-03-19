@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.db import transaction
 
 from main.models import Category, Ingredient, Recipe, RecipeIngredients, Review, UserProfile
 
@@ -49,8 +50,9 @@ class UserMethodTests(TestCase):
 
         user2 = User.objects.create_user(username="jp2", password="a")
         try:
-            p2 = UserProfile(user=user2, nickname="jp", score=1)
-            p2.save()
+            with transaction.atomic():
+                p2 = UserProfile(user=user2, nickname="jp", score=1)
+                p2.save()
         except Exception:
             pass
 

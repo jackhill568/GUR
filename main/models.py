@@ -25,6 +25,11 @@ class UserProfile(models.Model):
     score = models.IntegerField(default=0)
     permission_level = models.IntegerField(default=2, choices=PERMISSION_LEVELS)
 
+    def save(self, *args, **kwargs):
+        if self.permission_level not in [choice[0] for choice in self.PERMISSION_LEVELS]:
+            self.permission_level = 2
+        super(UserProfile, self).save(*args, **kwargs)
+
     def get_absolute_url(self):
         return reverse('GUR:view_user', args=[self.id])
 
