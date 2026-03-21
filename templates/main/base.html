@@ -1,6 +1,9 @@
 {% load static %}
 
 <html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	</head>
 	<head lang="en">
 		<meta charset="UTF-8" />
 		<title>
@@ -11,26 +14,35 @@
 		</title>
 	</head>
 	<body>
-		<div>
-			{% block body_block %}
-			{% endblock %}
-		</div>
-		<hr />
-		<div>
-			<ul>
-				{% if user.is_authenticated %}
-					<li><a href="{% url 'GUR:logout' %}">Logout</a></li>
-					<li><a href="{% url 'GUR:upload' %}">Upload a Recipe</a></li>
-					{% if user.userprofile %}
-					<li><a href="{% url 'GUR:view_user' user.userprofile.id %}">My Profile</a></li>
-					{% endif %}
-				{% else %}
-					<li><a href="{% url 'GUR:register' %}">Sign Up</a></li>
-					<li><a href="{% url 'GUR:login' %}">Login</a></li>
-				{% endif %}
-				<li><a href="{% url 'GUR:search' %}">Search</a></li>
-				<li><a href="{% url 'GUR:home' %}">Home</a></li>
-			</ul>
-		</div>
+		<div class="sidebar-wrapper">
+        
+        <nav class="sidebar">
+            <div class="logo-box">Logo</div>
+            {% if user.is_authenticated and user.userprofile %}
+				<a href="{% url 'GUR:view_user' user.userprofile.id %}" class="profile-link-button">My Profile</a>
+			{% endif %}
+
+            <div class="navigation-link-button">
+                <a href="{% url 'GUR:home' %}">Home</a>
+                <a href="{% url 'GUR:search' %}">Search</a>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'GUR:upload' %}">Upload</a>
+                    
+                    <a href="{% url 'GUR:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'GUR:register' %}">Sign Up</a>
+                    <a href="{% url 'GUR:login' %}">Login</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <main class="content-wrapper">
+            {% block body_block %}
+            {% endblock %}
+        </main>
+        
+    </div>
+
 	</body>
 </html>

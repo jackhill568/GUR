@@ -10,38 +10,63 @@
 {% block body_block %}
 	
 
-	This is a description on the home page about the website
+	<h1>GUR - Glasgow University Recipes</h1>
+    <p>
+		Welcome! Here you can read all the top recipes from Glaswegians and share recipes yourself. 
+		Rate and comment on top recipes to affect our Cook of the Month and Recipe of the Week.
+	</p>
 
 	<br />	
 	<!--cook of the month-->
 
-	{% if CookoftheMonth %}
-		Cook of the Month: 
-		<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
-	{% endif %}
+	<h3>Cook of the Month</h3>
+    <div class="featured-container">
 
-
-	<br />	
-	<img src="{{ MEDIA_URL }}images/standin.jpg"
+		<div class="featured-image">
+			{% if CookoftheMonth %}
+				<img src="{{ CookoftheMonth.profile_picture.url }}"
 				alt="Cook of the month profile picture" />
-	
+			{% else %}
+				<img src="{{ MEDIA_URL }}images/standin.jpg" alt="Default cook of the month profile picture "/>
+			{% endif %}
+        </div>
+
+		<div class="featured-text">
+				{% if CookoftheMonth %}
+					<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
+				{% endif %}
+				<p>Stay tuned for next week's top cook!</p>
+        </div>
+
+    </div>
+
 	<br />	
 
 
 	<!--recipe of the week-->
 	
-	{% if RecipeoftheWeek %}
-		Recipe of the Week: 
-		<a href="{% url 'GUR:view_recipe' RecipeoftheWeek.slug %}">{{ RecipeoftheWeek.name }}</a>
+	<h3>Recipe of the Week</h3>
+	<div class="featured-container">
+        <div class="featured-image">
+			{% if RecipeoftheWeek %}
+				<img src="{{ RecipeoftheWeek.picture.url }}" alt="Recipe of the week profile picture"> 
+			{% else %}
+                <img src="{{ MEDIA_URL }}images/standin.jpg" alt="Default recipe of the week picture">
+			{% endif %}
+        </div>
 
-	{% endif %}
-
-	<br />	
-
-	<img src="{{ MEDIA_URL }}images/standin.jpg"
-				alt="Picture of the recipe of the week" />
 	
-	<br />	
+
+		<div class="featured-text">
+			{% if CookoftheMonth %}
+				<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
+				<p>{{ CookoftheMonth.about }}</p>
+			{% else %}
+				<p>Stay tuned for next month's top cook!</p>
+			{% endif %}
+		</div>
+    </div>
+	
 
 
 {% endblock %}
