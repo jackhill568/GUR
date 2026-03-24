@@ -4,7 +4,7 @@
 
 {% block title_block %}
 	{% if profile %}
-	{{ profile.nickname }}
+	{{ profile.user.username }}
 	{% else %}
 		Unknown User
 	{% endif %}
@@ -14,7 +14,7 @@
 {% block body_block %}
 
 	{% if profile %}
-		<h3>{{ profile.nickname }}</h3>
+		<h3>{{ profile.user.username }}</h3>
 		<div class="featured-container">
 			<div class="featured-image">
 				{% if profile.profile_picture %}
@@ -60,7 +60,7 @@
 					<li>
 						Rating: {{ review.rating }} /5
 						Comment: {{ review.description }}
-						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ profile.nickname }}</a>
+						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ profile.user.username }}</a>
 					</li>
 				{% endfor %}
 				</ul>
