@@ -3,12 +3,11 @@ import random
 
 from main.helpers import *
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE",
-                      "GUR.settings")
-
 import django
 django.setup()
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE",
+                      "GUR.settings")
 USER_DATA = [
     {
         "first_name": "John",
