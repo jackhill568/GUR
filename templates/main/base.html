@@ -17,7 +17,7 @@
 		<div class="sidebar-wrapper">
         
         <nav class="sidebar">
-            <div class="logo-box">Logo</div>
+            <div class="logo-box"><img src="{% static 'images/logo.png' %}" alt="GUR Logo" /></div>
             {% if user.is_authenticated and user.userprofile %}
 				<a href="{% url 'GUR:view_user' user.userprofile.id %}" class="profile-link-button">My Profile</a>
 			{% endif %}
