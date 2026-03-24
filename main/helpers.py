@@ -34,6 +34,7 @@ USER_DICT = {
         "first_name": "NONE",
         "last_name": "NONE",
         "email": "NONE",
+        "nickname": "NONE",
         "password": "NONE",
         "profile_picture": "NONE",
         "score": 0,
@@ -54,7 +55,6 @@ def add_user(data):
 
     profile, _ = UserProfile.objects.get_or_create(
         user=user,
-        defaults={"nickname": data["nickname"]}
     )
     profile.profile_picture = data["profile_picture"]
     profile.score = data["score"]
@@ -89,7 +89,7 @@ REVIEW_DICT = {
     }
 def add_review(data):
 
-    profile = UserProfile.objects.get(nickname=data["user"])
+    profile = UserProfile.objects.get(user__username=data["user"])
     recipe = Recipe.objects.get(name=data["recipe"])
 
     r = Review.objects.get_or_create(user=profile, recipe=recipe, description=data["description"], rating=data["rating"])[0]

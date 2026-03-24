@@ -33,7 +33,7 @@
 
 		<div class="featured-text">
 				{% if CookoftheMonth %}
-					<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
+					<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.user.username }}</a>
 				{% endif %}
 				<p>Stay tuned for next week's top cook!</p>
         </div>
@@ -58,11 +58,11 @@
 	
 
 		<div class="featured-text">
-			{% if CookoftheMonth %}
-				<a href="{% url 'GUR:view_user' CookoftheMonth.id %}">{{ CookoftheMonth.nickname }}</a>
-				<p>{{ CookoftheMonth.about }}</p>
+			{% if RecipeoftheWeek %}
+				<a href="{% url 'GUR:view_recipe' RecipeoftheWeek.slug %}">{{ RecipeoftheWeek.name }}</a>
+				<p>{{ RecipeoftheWeek.description }}</p>
 			{% else %}
-				<p>Stay tuned for next month's top cook!</p>
+				<p>Stay tuned for next weeks top recipe!</p>
 			{% endif %}
 		</div>
     </div>
