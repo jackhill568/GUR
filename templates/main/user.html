@@ -1,55 +1,77 @@
 {% extends 'main/base.html' %}
 
-{% load staticfiles %}
+{% load static %}
 
 {% block title_block %}
-	{% if user %}
-	{{user.nickname}}
+	{% if profile %}
+	{{ profile.nickname }}
 	{% else %}
 		Unknown User
 	{% endif %}
 {% endblock %}
-	
+
 
 {% block body_block %}
-	
-	{% if user %}
 
-		<h1>{{ user.nickname }}</h1>
-		<img src="{{ MEDIA_URL }}images/{{ user.profile_picture }}"
-				alt="user profile picture" />
-		
-		<!--About me-->
-		<h2>About {{ user.first_name }}</h2>
-		{{ user.about }}
-		
-		<h2>{{ user.first_name }}'s recipes</h2>
-		{% if recipes %}
-			
-			{% for recipe in recipes|slice:":5" %}
-					<li><a href="{% url 'GUR:view_recipe' recipe.slug %}">{{ recipe.name }}</a></li>
-			{% endfor %}
-		{% else %}
-			{{ user.first_name }} doesn't have any recipes yet
-		{% endif %}
+	{% if profile %}
+		<h3>{{ profile.nickname }}</h3>
+		<div class="featured-container">
+			<div class="featured-image">
+				{% if profile.profile_picture %}
+					<!--img src="{{ MEDIA_URL }}images/standin.jpg" alt="User profile picture "-->
+					<img src="{{ profile.profile_picture.url }}" alt="User profile picture"/>
+				{% else %}
+					<img src="{{ MEDIA_URL }}images/standin.jpg" alt="Default user profile picture "/>
+				{% endif %}
+			</div>
 
+			<!--About me-->
+			<div class="about-me-container">
+				<h3>About {{ profile.user.first_name }}:</h3>
+					<div class="featured-text">
+						{% if profile.about %}
+							<p>{{ profile.about }}</p>
+						{% else %}
+							{{ profile.user.first_name }} doesn't have an about me yet
+						{% endif %}
+					</div>
+			</div>
+		</div>	
 
-		<h2>{{ user.first_name }}'s reviews</h2>
-		{% if reviews %}
-			{% for review in reviews|slice:":5" %}
-			<li> 
-				Rating: {{ review.rating }} /5
-				Comment: {{ review.description }}
-				Written by: <a href="{% url 'GUR:view_user' user.id %}">{{ user.nickname }}</a>
-			</li>
-			{% endfor %}
-		{% else %}
-			No Reviews Yet
-		{% endif %}
+		<br />
+		<div class="featured-text">
+			<h2>{{ profile.user.first_name }}'s recipes</h2>
+			{% if recipes %}
+				<ul>
+				{% for recipe in recipes|slice:":5" %}
+						<li><a href="{% url 'GUR:view_recipe' recipe.slug %}">{{ recipe.name }}</a></li>
+				{% endfor %}
+				</ul>
+			{% else %}
+				{{ profile.user.first_name }} doesn't have any recipes yet
+			{% endif %}
+		</div>
 
-		{% if user.is_authenticated %} <!-- rate/ comment-->
-			Report
-		{% endif %}
+		<div class ="featured-text">
+			<h2>{{ profile.user.first_name }}'s reviews</h2>
+			{% if reviews %}
+				<ul>
+					{% for review in reviews|slice:":5" %}
+					<li>
+						Rating: {{ review.rating }} /5
+						Comment: {{ review.description }}
+						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ profile.nickname }}</a>
+					</li>
+				{% endfor %}
+				</ul>
+			{% else %}
+				No Reviews Yet
+			{% endif %}
+
+			{% if user.is_authenticated %}
+				Report
+			{% endif %}
+		</div>
 
 	{% else %}
 			Unknown User

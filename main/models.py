@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from django.utils import timezone
 
@@ -7,25 +8,27 @@ from django.template.defaultfilters import slugify
 
 from django.urls import reverse
 
-class User(models.Model):
-    
+class UserProfile(models.Model):
+
     PERMISSION_LEVELS = [
             (2, "user"),
             (1, "admin")
     ]
 
-    first_name  = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     nickname = models.CharField(max_length=128, unique=True)
-    about = models.CharField(max_length=300, default= "")
+    about = models.CharField(max_length=300, default="")
 
-
-    email = models.CharField(max_length=128)
-    password = models.CharField(max_length=128)
-    profile_picture = models.ImageField()
+    profile_picture = models.ImageField(upload_to='profile_pics', blank=True)
 
     score = models.IntegerField(default=0)
     permission_level = models.IntegerField(default=2, choices=PERMISSION_LEVELS)
+
+    def save(self, *args, **kwargs):
+        if self.permission_level not in [choice[0] for choice in self.PERMISSION_LEVELS]:
+            self.permission_level = 2
+        super(UserProfile, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('GUR:view_user', args=[self.id])
@@ -57,7 +60,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length = 500)
     method = models.CharField(max_length = 500)
     date = models.DateTimeField(default=timezone.now)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1) # dont think we need delete on cascade
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(unique=True, default="defualt-recipe")
 
     def save(self, *args, **kwargs):
@@ -100,7 +103,7 @@ class Review(models.Model):
     
     description = models.CharField(max_length=500)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 
