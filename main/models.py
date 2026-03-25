@@ -33,7 +33,7 @@ class UserProfile(models.Model):
         return reverse('GUR:view_user', args=[self.id])
 
     def __str__(self):
-        return self.nickname
+        return self.user.username
 
 
 class Ingredient(models.Model):

@@ -23,7 +23,7 @@
     <div class="featured-container">
 
 		<div class="featured-image">
-			{% if CookoftheMonth %}
+			{% if CookoftheMonth and CookoftheMonth.profile_picture%}
 				<img src="{{ CookoftheMonth.profile_picture.url }}"
 				alt="Cook of the month profile picture" />
 			{% else %}
@@ -48,7 +48,7 @@
 	<h3>Recipe of the Week</h3>
 	<div class="featured-container">
         <div class="featured-image">
-			{% if RecipeoftheWeek %}
+			{% if RecipeoftheWeek and RecipeoftheWeek.picture %}
 				<img src="{{ RecipeoftheWeek.picture.url }}" alt="Recipe of the week profile picture"> 
 			{% else %}
                 <img src="{{ MEDIA_URL }}images/standin.jpg" alt="Default recipe of the week picture">
