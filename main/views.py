@@ -12,10 +12,12 @@ from datetime import timedelta
 from django.utils import timezone
 
 from main.models import UserProfile, Recipe, RecipeIngredients, Review
-from main.forms import UserForm, UserProfileForm
+from main.forms import UserForm, UserProfileForm, RecipeForm, RecipeIngredientsForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
+
+
 
 def search(request):
     query = request.GET.get('q', '')
@@ -88,7 +90,16 @@ def view_user(request, user_id):
 
 @login_required
 def add_recipe(request):
-    return HttpResponse("upload recipe")
+    if request.method == 'POST':
+        recipe_ingredients_form = RecipeIngredientsForm(request.POST)
+        recipe_form = RecipeForm(request.POST)
+    else:
+        recipe_ingredients_form = RecipeIngredientsForm()
+        recipe_form = RecipeForm()
+    return render(request, 'main/upload.html', context={
+        'recipe_form': recipe_form,
+        'recipe_ingredients_form': recipe_ingredients_form,
+    })
 
 
 def register(request):

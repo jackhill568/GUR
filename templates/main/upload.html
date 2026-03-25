@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title_block %}
+	upload
+{% endblock %}
+
+{% block body_block %}
+
+	<h1>Upload a Recipe</h1>
+
+	{% if user.is_authenticated %}
+        <form id="recipe_ingredients_form" method="post" action="{% url 'GUR:upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+			{{ recipe_ingredients_form.as_p }}
+            
+            <input type="submit" value="Submit Ingredients" />
+        </form>
+        <form id="recipe_form" method="post" action="{% url 'GUR:upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+			{{ recipe_form.as_p }}
+            
+            <input type="submit" value="Upload Recipe" />
+        </form>
+	{% else %}
+		<p>You must be <a href="{% url 'GUR:login' %}">logged in</a> to upload a recipe.</p>
+	{% endif %}
+
+{% endblock %}

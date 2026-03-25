@@ -87,7 +87,6 @@ class RecipeIngredients(models.Model):
         return self.quantity + self.unit
 
 
-
 class Review(models.Model):
 
     RATINGS = (
