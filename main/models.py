@@ -60,7 +60,7 @@ class Recipe(models.Model):
     method = models.CharField(max_length = 500)
     date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=1)
-    slug = models.SlugField(unique=True, default="defualt-recipe")
+    slug = models.SlugField(unique=True, default="default-recipe")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
