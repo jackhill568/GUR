@@ -1,7 +1,6 @@
 import os
 import random
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                       "GUR.settings")
 import django
