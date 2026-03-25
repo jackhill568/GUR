@@ -7,7 +7,7 @@ class UserIndex(indexes.SearchIndex, indexes.Indexable):
     
     first_name = indexes.CharField(model_attr='user__first_name')
     last_name = indexes.CharField(model_attr='user__last_name')
-    nickname = indexes.CharField(model_attr='nickname')
+    nickname = indexes.CharField(model_attr='user__username')
 
     def get_model(self):
         return UserProfile
