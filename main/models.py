@@ -17,7 +17,6 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    nickname = models.CharField(max_length=128, unique=True)
     about = models.CharField(max_length=300, default="")
 
     profile_picture = models.ImageField(upload_to='profile_pics', blank=True)

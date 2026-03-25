@@ -18,7 +18,7 @@
 		<h1>{{ recipe.name }}</h1>
 		{{ recipe.description }}
 		<br />
-		Created by <a href="{% url 'GUR:view_user' recipe.user.id %}">{{ recipe.user.nickname }}</a> on {{ recipe.date}}.
+		Created by <a href="{% url 'GUR:view_user' recipe.user.id %}">{{ recipe.user.user.username }}</a> on {{ recipe.date}}.
 		<br />
 		<img src="{{ MEDIA_URL }}images/{{ recipe.picture }}"
 				alt="Recipe Picture" />
@@ -52,7 +52,7 @@
 			<li> 
 				Rating: {{ review.rating }} /5
 				Comment: {{ review.description }}
-				Written by: <a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.nickname }}</a>
+				Written by: <a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.user.username }}</a>
 			</li>
 			{% endfor %}
 		{% else %}
