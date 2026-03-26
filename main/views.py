@@ -12,10 +12,11 @@ from datetime import timedelta
 from django.utils import timezone
 
 from main.models import UserProfile, Recipe, RecipeIngredients, Review
-from main.forms import UserForm, UserProfileForm
+from main.forms import UserForm, UserProfileForm, ReviewForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
+
 
 def search(request):
     query = request.GET.get('q', '')
@@ -61,7 +62,14 @@ def view_recipe(request,recipe_slug):
     try:
         recipe = Recipe.objects.get(slug=recipe_slug)
         recipeIngredients = RecipeIngredients.objects.filter(recipe=recipe)
-        recipeReviews = Review.objects.filter(recipe=recipe)
+
+        sort_by = request.GET.get('sort', 'recent')
+
+        if sort_by == 'top':
+            recipeReviews = Review.objects.filter(recipe=recipe).order_by('-rating')
+        else:
+            recipeReviews = Review.objects.filter(recipe=recipe).order_by('-id')
+
         context_dict["recipe"] = recipe
         context_dict["reviews"] = recipeReviews
         context_dict["ingredients"] = recipeIngredients
@@ -148,3 +156,32 @@ def user_logout(request):
     return redirect(reverse('GUR:home'))
 
 
+@login_required
+def add_review(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+    except Recipe.DoesNotExist:
+        return redirect('GUR:home')
+
+    form = ReviewForm()
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.recipe = recipe
+            
+            profile = UserProfile.objects.get(user=request.user)
+            review.user = profile
+            
+            review.save()
+            return redirect('GUR:view_recipe', recipe_slug=recipe_slug)
+        else:
+            print(form.errors)
+
+    context_dict = {
+        'form': form,
+        'recipe': recipe,
+    }
+    
+    return render(request, 'main/add_review.html', context=context_dict)

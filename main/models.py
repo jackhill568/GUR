@@ -91,11 +91,11 @@ class RecipeIngredients(models.Model):
 class Review(models.Model):
 
     RATINGS = (
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5)
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5")
     )
 
     rating = models.IntegerField(choices=RATINGS)
