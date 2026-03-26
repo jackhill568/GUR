@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'haystack',
     'main',
+    'django_select2',
 ]
 
 MIDDLEWARE = [
