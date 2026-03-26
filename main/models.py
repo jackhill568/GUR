@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 from django.utils import timezone
@@ -36,14 +37,6 @@ class UserProfile(models.Model):
         return self.nickname
 
 
-class Ingredient(models.Model):
-
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return self.name
-
-
 class Category(models.Model):
 
     name = models.CharField(max_length=30)
@@ -51,12 +44,19 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+class Ingredient(models.Model):
+
+    name = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.name
 
 class Recipe(models.Model):
 
     name  = models.CharField(max_length=128)
     picture = models.ImageField()
     description = models.CharField(max_length = 500)
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredients')
     method = models.CharField(max_length = 500)
     date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=1)
@@ -74,7 +74,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-
 class RecipeIngredients(models.Model):
     
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
@@ -85,7 +84,6 @@ class RecipeIngredients(models.Model):
 
     def __str__(self):
         return self.quantity + self.unit
-
 
 class Review(models.Model):
 

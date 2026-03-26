@@ -11,8 +11,8 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from main.models import UserProfile, Recipe, RecipeIngredients, Review
-from main.forms import UserForm, UserProfileForm, RecipeForm, RecipeIngredientsForm
+from main.models import UserProfile, Recipe, RecipeIngredients, Ingredient, Review
+from main.forms import UserForm, UserProfileForm, RecipeForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
@@ -91,14 +91,20 @@ def view_user(request, user_id):
 @login_required
 def add_recipe(request):
     if request.method == 'POST':
-        recipe_ingredients_form = RecipeIngredientsForm(request.POST)
-        recipe_form = RecipeForm(request.POST)
+        recipe_form = RecipeForm(request.POST, request.FILES)
+        if recipe_form.is_valid():
+            recipe = recipe_form.save(commit=False)
+            recipe.save()
+            ingredients = recipe_form.cleaned_data['ingredients']
+            raw_ingredients = request.POST.getlist('ingredients')
+            for name in raw_ingredients:
+                ingredient, created = Ingredient.objects.get_or_create(name=name)
+                recipe.ingredients.add(ingredient)
+            return redirect('GUR:home')
     else:
-        recipe_ingredients_form = RecipeIngredientsForm()
         recipe_form = RecipeForm()
     return render(request, 'main/upload.html', context={
-        'recipe_form': recipe_form,
-        'recipe_ingredients_form': recipe_ingredients_form,
+        'recipe_form': recipe_form
     })
 
 
