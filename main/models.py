@@ -32,6 +32,9 @@ class UserProfile(models.Model):
     def get_absolute_url(self):
         return reverse('GUR:view_user', args=[self.id])
 
+    def get_model_name(self):
+        return self._meta.verbose_name
+
     def __str__(self):
         return self.user.username
 
@@ -42,6 +45,8 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+    def get_model_name(self):
+        return self._meta.verbose_name
 
 
 class Category(models.Model):
@@ -51,6 +56,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_model_name(self):
+        return self._meta.verbose_name
 
 class Recipe(models.Model):
 
@@ -73,6 +80,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_model_name(self):
+        return self._meta.verbose_name
 
 
 class RecipeIngredients(models.Model):
@@ -111,6 +121,9 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.user) + ":" + str(self.recipe)
+
+    def get_model_name(self):
+        return self._meta.verbose_name
 
 
 
