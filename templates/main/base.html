@@ -3,6 +3,17 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+        <!-- jQuery (REQUIRED) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Select2 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+
+        <!-- Select2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+
+        <!-- Django Select2 media -->
+        {% block scripts %}{% endblock %}
 	</head>
 	<head lang="en">
 		<meta charset="UTF-8" />
@@ -20,7 +31,7 @@
 		<div class="sidebar-wrapper">
         
         <nav class="sidebar">
-            <div class="logo-box"><img src="{% static 'images/logo.png' %}" alt="GUR Logo" /></div>
+            <div class="logo-box"><img src="{% static 'images/logo.jpg' %}" alt="GUR Logo" /></div>
             {% if user.is_authenticated and user.userprofile %}
 				<a href="{% url 'GUR:view_user' user.userprofile.id %}" class="profile-link-button">My Profile</a>
 			{% endif %}

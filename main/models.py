@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 from django.utils import timezone
@@ -39,19 +40,18 @@ class UserProfile(models.Model):
         return self.user.username
 
 
-class Ingredient(models.Model):
+class Category(models.Model):
 
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
     def get_model_name(self):
         return self._meta.verbose_name
 
+class Ingredient(models.Model):
 
-class Category(models.Model):
-
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.name
@@ -64,10 +64,11 @@ class Recipe(models.Model):
     name  = models.CharField(max_length=128)
     picture = models.ImageField()
     description = models.CharField(max_length = 500)
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredients')
     method = models.CharField(max_length = 500)
     date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=1)
-    slug = models.SlugField(unique=True, default="defualt-recipe")
+    slug = models.SlugField(unique=True, default="default-recipe")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -96,16 +97,14 @@ class RecipeIngredients(models.Model):
     def __str__(self):
         return self.quantity + self.unit
 
-
-
 class Review(models.Model):
 
     RATINGS = (
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5)
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5")
     )
 
     rating = models.IntegerField(choices=RATINGS)

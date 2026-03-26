@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title_block %}
+	upload
+{% endblock %}
+
+{% block body_block %}
+<style>
+.select2-container--default .select2-selection--multiple {
+    min-width: 400px;
+}
+.select2-dropdown {
+    min-width: 400px;
+}
+</style>
+	<h1>Upload a Recipe</h1>
+
+	{% if user.is_authenticated %}
+        <form id="recipe_form" method="post" action="{% url 'GUR:upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+			{{ recipe_form.as_p }}
+            
+            <input type="submit" value="Upload Recipe" />
+        </form>
+        {{ recipe_form.media }}
+        {{ recipe_form.media.js }}
+        {{ recipe_form.media.css }}
+    {% else %}
+		<p>You must be <a href="{% url 'GUR:login' %}">logged in</a> to upload a recipe.</p>
+	{% endif %}
+
+{% endblock %}
+{% block scripts %}
+    {{ recipe_form.media }}
+{% endblock %}
