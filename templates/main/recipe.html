@@ -41,13 +41,28 @@
 		<h2>Method</h2>
 		{{ recipe.method }}
 
-		
-		{% if user.is_authenticated %} <!-- rate/ comment-->
-			Rate
-		{% endif %}
 
-		<h2>reviews</h2>
+		<h2>Reviews</h2>
 		{% if reviews %}
+			<div style="margin-bottom: 15px">
+				<strong>Sort by:</strong>
+
+				{% if sort_by == 'recent' %}
+					<b>Most Recent</b>
+				{% else %}
+					<a href="?sort=recent">Most Recent</a>
+				{% endif %}
+
+				|
+
+				{% if sort_by == 'top' %}
+					<b>Highest Rated</b>
+				{% else %}
+					<a href="?sort=top">Highest Rated</a>
+				{% endif %}
+			
+			</div>
+			
 			{% for review in reviews|slice:":5" %}
 			<li> 
 				Rating: {{ review.rating }} /5
@@ -60,7 +75,12 @@
 		{% endif %}
 
 		{% if user.is_authenticated %} <!-- rate/ comment-->
-			Report
+		<h2>Review this recipe</h2>
+		<div>
+			<a href="{% url 'GUR:add_review' recipe.slug %}" class="profile-link-button">
+				Leave a Review
+			</a>
+		</div>
 		{% endif %}
 
 
