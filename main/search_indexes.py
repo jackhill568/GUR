@@ -1,13 +1,13 @@
 import datetime
 from haystack import indexes
-from main.models import UserProfile, Recipe, Review
+from main.models import UserProfile, Recipe, Review, Category
 
 class UserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     
     first_name = indexes.CharField(model_attr='user__first_name')
     last_name = indexes.CharField(model_attr='user__last_name')
-    nickname = indexes.CharField(model_attr='nickname')
+    nickname = indexes.CharField(model_attr='user__username')
 
     def get_model(self):
         return UserProfile
@@ -43,3 +43,12 @@ class ReviewIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
+
+class CategoryIndex(indexes.SearchIndex, indexes.Indexable):
+
+    text = indexes.CharField(document=True, use_template=True)
+
+    name = indexes.CharField(model_attr='name')
+
+    def get_model(self):
+        return Category

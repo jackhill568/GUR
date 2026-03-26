@@ -60,7 +60,7 @@
 					<li>
 						Rating: {{ review.rating }} /5
 						Comment: {{ review.description }}
-						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ profile.user.username }}</a>
+						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ review.user.user.username }}</a>
 					</li>
 				{% endfor %}
 				</ul>

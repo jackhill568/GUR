@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from main.models import UserProfile, Recipe, RecipeIngredients, Ingredient
+from main.models import UserProfile, Review, Recipe, RecipeIngredients, Ingredient
 from django_select2 import forms as s2forms
 
 
@@ -40,3 +40,8 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ('name', 'picture', 'description', 'method', 'ingredients')
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ('rating', 'description')
+        

@@ -34,7 +34,7 @@ class UserProfile(models.Model):
         return reverse('GUR:view_user', args=[self.id])
 
     def __str__(self):
-        return self.nickname
+        return self.user.username
 
 
 class Category(models.Model):
@@ -88,11 +88,11 @@ class RecipeIngredients(models.Model):
 class Review(models.Model):
 
     RATINGS = (
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4),
-        ("5", 5)
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5")
     )
 
     rating = models.IntegerField(choices=RATINGS)

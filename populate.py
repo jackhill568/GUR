@@ -1,7 +1,6 @@
 import os
 import random
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE",
                       "GUR.settings")
 import django
@@ -9,228 +8,221 @@ django.setup()
 
 
 from main.helpers import *
+import random
 
-USER_DATA = [
-    {
-        "first_name": "John",
-        "last_name": "Doe",
-        "nickname": "jdoe",
-        "email": "jdoe@example.com",
-        "password": "",
-        "profile_picture": "profile_pics/jdoe.jpg",
-        "score": 150,
-        "permission_level": 2,
-    },
-    {
-        "first_name": "Jane",
-        "last_name": "Smith",
-        "nickname": "jsmith",
-        "email": "jsmith@example.com",
-        "password": "",
-        "profile_picture": "profile_pics/jsmith.jpg",
-        "score": 320,
-        "permission_level": 1,
-    },
-    {
-        "first_name": "Michael",
-        "last_name": "Brown",
-        "nickname": "mbrown",
-        "email": "mbrown@example.com",
-        "password": "",
-        "profile_picture": "profile_pics/mbrown.jpg",
-        "score": 75,
-        "permission_level": 2,
-    },
-    {
-        "first_name": "Emily",
-        "last_name": "Davis",
-        "nickname": "emilyd",
-        "email": "emilyd@example.com",
-        "password": "",
-        "profile_picture": "profile_pics/emilyd.jpg",
-        "score": 210,
-        "permission_level": 2,
-    },
-    {
-        "first_name": "Admin",
-        "last_name": "User",
-        "nickname": "superadmin",
-        "email": "admin@example.com",
-        "password": "",
-        "profile_picture": "profile_pics/admin.jpg",
-        "score": 999,
-        "permission_level": 1,
-    },
+FIRST_NAMES = [
+    "James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth",
+    "David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen",
+    "Christopher","Nancy","Daniel","Lisa","Matthew","Betty","Anthony","Margaret","Mark","Sandra",
+    "Donald","Ashley","Steven","Kimberly","Paul","Emily","Andrew","Donna","Joshua","Michelle",
+    "Kenneth","Dorothy","Kevin","Carol","Brian","Amanda","George","Melissa","Edward","Deborah",
+    "Ronald","Stephanie","Timothy","Rebecca","Jason","Sharon","Jeffrey","Laura","Ryan","Cynthia",
+    "Jacob","Kathleen","Gary","Amy","Nicholas","Angela","Eric","Shirley","Jonathan","Anna",
+    "Stephen","Brenda","Larry","Pamela","Justin","Emma","Scott","Nicole","Brandon","Helen",
+    "Benjamin","Samantha","Samuel","Katherine","Frank","Christine","Gregory","Debra","Raymond","Rachel",
+    "Alexander","Catherine","Patrick","Carolyn","Jack","Janet","Dennis","Ruth","Jerry","Maria",
+    "Tyler","Heather","Aaron","Diane","Jose","Virginia","Henry","Julie","Adam","Joyce",
+    "Douglas","Victoria","Nathan","Olivia","Peter","Kelly","Zachary","Christina","Kyle","Lauren",
+    "Walter","Joan","Harold","Evelyn","Jeremy","Judith","Ethan","Megan","Carl","Cheryl",
+    "Keith","Andrea","Roger","Hannah","Gerald","Martha","Christian","Jacqueline","Terry","Frances",
+    "Sean","Gloria","Arthur","Ann","Austin","Teresa","Noah","Kathryn","Lawrence","Sara",
+    "Jesse","Janice","Joe","Jean","Bryan","Alice","Billy","Madison","Jordan","Doris",
+    "Albert","Abigail","Dylan","Julia","Bruce","Judy","Willie","Grace","Gabriel","Denise",
+    "Alan","Amber","Juan","Marilyn","Logan","Beverly","Wayne","Danielle","Ralph","Theresa",
+    "Roy","Sophia","Eugene","Marie","Randy","Diana","Vincent","Brittany","Russell","Natalie",
+    "Elijah","Isabella","Louis","Charlotte","Bobby","Rose","Philip","Alexis","Johnny","Kayla"
+]
+LAST_NAMES = [
+    "Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez",
+    "Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin",
+    "Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson",
+    "Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores",
+    "Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts",
+    "Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes",
+    "Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper",
+    "Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson",
+    "Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes",
+    "Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez",
+    "Powell","Jenkins","Perry","Russell","Sullivan","Bell","Coleman","Butler","Henderson","Barnes",
+    "Gonzales","Fisher","Vasquez","Simmons","Romero","Jordan","Patterson","Alexander","Hamilton","Graham",
+    "Reynolds","Griffin","Wallace","Moreno","West","Cole","Hayes","Bryant","Herrera","Gibson",
+    "Ellis","Tran","Medina","Aguilar","Stevens","Murray","Ford","Castro","Marshall","Owens",
+    "Harrison","Fernandez","Mcdonald","Woods","Washington","Kennedy","Wells","Vargas","Henry","Chen",
+    "Freeman","Webb","Tucker","Guzman","Burns","Crawford","Olson","Simpson","Porter","Hunter",
+    "Gordon","Mendez","Silva","Shaw","Snyder","Mason","Dixon","Munoz","Hunt","Hicks",
+    "Holmes","Palmer","Wagner","Black","Robertson","Boyd","Rose","Stone","Salazar","Fox",
+    "Warren","Mills","Meyer","Rice","Schmidt","Garza","Daniels","Ferguson","Nichols","Stephens"
+]
+def generate_mass_users(n):
+    users = []
+    for i in range(n):
+        fn = random.choice(FIRST_NAMES)
+        ln = random.choice(LAST_NAMES)
+
+        users.append({
+            "first_name": fn,
+            "last_name": ln,
+            "email": f"{fn.lower()}{ln.lower()}{i}@mail.com",
+            "nickname": f"{fn.lower()}{i}",
+            "password": "pass123",
+            "profile_picture": "",
+            "score": random.randint(0, 2000),
+            "permission_level": random.choice([1, 2, 2, 2, 2]) 
+        })
+    return users
+
+USER_DATA = generate_mass_users(1000)
+
+INGREDIENTS = [
+    "Salt","Black Pepper","White Pepper","Sugar","Brown Sugar","Flour","Bread Flour","Baking Powder","Baking Soda","Yeast",
+    "Cornstarch","Vanilla Extract","Honey","Maple Syrup","Olive Oil","Vegetable Oil","Butter","Margarine","Milk","Cream",
+    "Chicken Breast","Chicken Thigh","Ground Beef","Beef Steak","Pork Chop","Bacon","Sausage","Turkey","Duck","Lamb",
+    "Salmon","Tuna","Cod","Shrimp","Prawns","Crab","Lobster","Eggs","Tofu","Tempeh",
+    "Onion","Red Onion","Garlic","Ginger","Carrot","Potato","Sweet Potato","Tomato","Cherry Tomato","Cucumber",
+    "Bell Pepper","Red Bell Pepper","Green Bell Pepper","Yellow Bell Pepper","Zucchini","Eggplant","Broccoli","Cauliflower",
+    "Spinach","Kale","Lettuce","Cabbage","Mushroom","Green Beans","Peas","Corn","Asparagus","Leek","Radish",
+    "Apple","Banana","Orange","Lemon","Lime","Strawberry","Blueberry","Raspberry","Blackberry","Pineapple",
+    "Mango","Papaya","Kiwi","Grapes","Watermelon","Peach","Pear","Plum","Coconut","Avocado",
+    "Basil","Parsley","Cilantro","Mint","Rosemary","Thyme","Oregano","Dill","Chives","Sage",
+    "Cumin","Turmeric","Paprika","Smoked Paprika","Chili Powder","Cayenne Pepper","Cinnamon","Nutmeg","Cloves","Cardamom",
+    "Mustard Seeds","Fennel Seeds","Coriander","Bay Leaves","Star Anise","Saffron",
+    "Rice","Brown Rice","Jasmine Rice","Basmati Rice","Pasta","Spaghetti","Fusilli","Noodles","Quinoa","Barley",
+    "Oats","Bread","Whole Wheat Bread","Tortilla","Wrap","Couscous",
+    "Cheddar Cheese","Mozzarella","Parmesan","Feta Cheese","Goat Cheese","Cream Cheese","Yogurt","Greek Yogurt",
+    "Condensed Milk","Evaporated Milk",
+    "Soy Sauce","Fish Sauce","Oyster Sauce","Tomato Sauce","Ketchup","Mayonnaise","Mustard","Hot Sauce",
+    "BBQ Sauce","Vinegar","Apple Cider Vinegar","Balsamic Vinegar","Sesame Oil","Teriyaki Sauce",
+    "Almonds","Peanuts","Cashews","Walnuts","Hazelnuts","Pistachios","Chia Seeds","Flax Seeds","Sunflower Seeds","Pumpkin Seeds",
+    "Chocolate","Dark Chocolate","Milk Chocolate","Cocoa Powder","White Chocolate","Sprinkles","Food Coloring",
+    "Gelatin","Marshmallows",
+    "Paneer","Chickpeas","Lentils","Black Beans","Kidney Beans","Hummus","Pita Bread","Curry Paste",
+    "Kimchi","Miso Paste","Seaweed","Wasabi","Sriracha","Tahini","Harissa",
+    "Coffee","Tea","Green Tea","Black Tea","Orange Juice","Apple Juice","Coconut Milk","Almond Milk","Soy Milk"
+]
+INGREDIENT_DATA = [{"name": i} for i in INGREDIENTS]
+
+
+CATEGORIES = [
+    "Italian","Mexican","Indian","Chinese","Japanese","Thai","French","Spanish","Greek","Turkish",
+    "American","British","Korean","Vietnamese","Mediterranean","Middle Eastern","Caribbean","African","German","Brazilian",
+
+    "Breakfast","Brunch","Lunch","Dinner","Snack","Dessert","Appetizer","Side Dish","Main Course","Street Food",
+
+    "Vegan","Vegetarian","Gluten Free","Dairy Free","Low Carb","Keto","Paleo","High Protein","Low Fat","Sugar Free",
+
+    "Grilled","Baked","Fried","Roasted","Steamed","Boiled","Slow Cooked","Pressure Cooked","Stir Fry","Air Fried",
+    "Easy","Medium","Hard","Beginner Friendly","Quick Meals","30 Minute Meals","One Pot","Minimal Ingredients",
+
+    "Chicken","Beef","Pork","Seafood","Fish","Vegetables","Pasta","Rice","Noodles","Cheese",
+    "Egg Based","Tofu","Legumes","Beans","Lentils",
+
+    "Holiday","Christmas","Thanksgiving","Easter","Party","BBQ","Picnic","Date Night","Comfort Food","Family Friendly",
+
+    "Healthy","Weight Loss","Muscle Gain","Low Sodium","Heart Healthy","Diabetic Friendly","Clean Eating",
+
+    "Tex Mex","Sichuan","Cantonese","Punjabi","Southern US","New England","Californian","Andalusian",
+
+    "Soup","Salad","Sandwich","Burger","Pizza","Pasta Dish","Curry","Stew","Casserole","Wrap",
+    "Tacos","Sushi","Dumplings","Pie","Cake","Cookies","Ice Cream",
+
+    "Smoothies","Juices","Cocktails","Mocktails","Hot Drinks","Cold Drinks",
+
+    "Fusion","Street Style","Gourmet","Fine Dining","Homemade","Budget Meals","Meal Prep","Batch Cooking"
 ]
 
-INGREDIENT_DATA = [
-    {"name": "Tomato"},
-    {"name": "Onion"},
-    {"name": "Garlic"},
-    {"name": "Chicken Breast"},
-    {"name": "Ground Beef"},
-    {"name": "Olive Oil"},
-    {"name": "Salt"},
-    {"name": "Black Pepper"},
-    {"name": "Basil"},
-    {"name": "Oregano"},
-    {"name": "Milk"},
-    {"name": "Butter"},
-    {"name": "Eggs"},
-    {"name": "Flour"},
-    {"name": "Sugar"},
-]
+CATEGORY_DATA = [{"name": c} for c in CATEGORIES]
 
-CATEGORY_DATA = [
-    {"name": "Breakfast"},
-    {"name": "Lunch"},
-    {"name": "Dinner"},
-    {"name": "Dessert"},
-    {"name": "Snack"},
-    {"name": "Appetizer"},
-    {"name": "Main Course"},
-    {"name": "Side Dish"},
-    {"name": "Salad"},
-    {"name": "Soup"},
-    {"name": "Beverage"},
-    {"name": "Vegetarian"},
-    {"name": "Vegan"},
-    {"name": "Gluten-Free"},
-    {"name": "Seafood"},
-]
 
-RECIPE_DATA = [
-    {
-        "name": "Classic Pancakes",
-        "picture": "recipe_pics/pancakes.jpg",
-        "description": "Fluffy homemade pancakes perfect for a weekend breakfast.",
-        "method": "Mix dry ingredients, add milk and eggs, whisk until smooth. Cook on a greased pan until golden brown on both sides.",
-        "categories": ["Breakfast", "Dessert"],
-    },
-    {
-        "name": "Grilled Chicken Salad",
-        "picture": "recipe_pics/grilled_chicken_salad.jpg",
-        "description": "Healthy grilled chicken served over fresh greens and vegetables.",
-        "method": "Season and grill chicken. Slice and place over mixed greens, tomatoes, and onions. Drizzle with olive oil dressing.",
-        "categories": ["Lunch", "Dinner", "Salad", "Healthy"],
-    },
-    {
-        "name": "Spaghetti Bolognese",
-        "picture": "recipe_pics/spaghetti_bolognese.jpg",
-        "description": "Rich and hearty Italian pasta dish with meat sauce.",
-        "method": "Cook ground beef with onions and garlic. Add tomato sauce and simmer. Serve over cooked spaghetti.",
-        "categories": ["Dinner", "Main Course"],
-    },
-    {
-        "name": "Vegetable Stir Fry",
-        "picture": "recipe_pics/vegetable_stirfry.jpg",
-        "description": "Quick and colorful vegetable stir fry packed with flavor.",
-        "method": "Heat oil in a wok, add chopped vegetables, stir fry on high heat. Add soy sauce and cook until tender-crisp.",
-        "categories": ["Dinner", "Vegetarian", "Vegan"],
-    },
-    {
-        "name": "Chocolate Chip Cookies",
-        "picture": "recipe_pics/cookies.jpg",
-        "description": "Soft and chewy chocolate chip cookies.",
-        "method": "Cream butter and sugar, add eggs and flour, fold in chocolate chips. Bake at 180°C for 10-12 minutes.",
-        "categories": ["Dessert", "Snack"],
-    },
-]
+def generate_recipes_with_existing_data(n=500, categories_data=None, ingredients_data=None):
+    """
+    Generates recipes using existing CATEGORY_DICTS and INGREDIENT_DICTS.
+    
+    Returns:
+    - recipes: list of recipe dictionaries for add_recipe()
+    - recipe_ingredients: list of recipe-ingredient mappings for add_recipe_ingredients()
+    """
+    if categories_data is None or ingredients_data is None:
+        raise ValueError("You must provide categories_data and ingredients_data")
 
-RECIPE_INGREDIENT_DATA = [
-    {"recipe": "Classic Pancakes", "ingredient": "Flour", "quantity": "2", "unit": "cups"},
-    {"recipe": "Classic Pancakes", "ingredient": "Milk", "quantity": "1.5", "unit": "cups"},
-    {"recipe": "Classic Pancakes", "ingredient": "Eggs", "quantity": "2", "unit": "pcs"},
-    {"recipe": "Classic Pancakes", "ingredient": "Sugar", "quantity": "2", "unit": "tbsp"},
-    {"recipe": "Classic Pancakes", "ingredient": "Butter", "quantity": "2", "unit": "tbsp"},
+    category_names = [c["name"] for c in categories_data]
+    ingredient_names = [i["name"] for i in ingredients_data]
 
-    {"recipe": "Grilled Chicken Salad", "ingredient": "Chicken Breast", "quantity": "1", "unit": "pcs"},
-    {"recipe": "Grilled Chicken Salad", "ingredient": "Tomato", "quantity": "2", "unit": "pcs"},
-    {"recipe": "Grilled Chicken Salad", "ingredient": "Onion", "quantity": "0.5", "unit": "pcs"},
-    {"recipe": "Grilled Chicken Salad", "ingredient": "Olive Oil", "quantity": "2", "unit": "tbsp"},
-    {"recipe": "Grilled Chicken Salad", "ingredient": "Salt", "quantity": "1", "unit": "tsp"},
+    recipes = []
+    recipe_ingredients = []
 
-    {"recipe": "Spaghetti Bolognese", "ingredient": "Ground Beef", "quantity": "500", "unit": "g"},
-    {"recipe": "Spaghetti Bolognese", "ingredient": "Tomato", "quantity": "3", "unit": "pcs"},
-    {"recipe": "Spaghetti Bolognese", "ingredient": "Onion", "quantity": "1", "unit": "pcs"},
-    {"recipe": "Spaghetti Bolognese", "ingredient": "Garlic", "quantity": "2", "unit": "cloves"},
-    {"recipe": "Spaghetti Bolognese", "ingredient": "Oregano", "quantity": "1", "unit": "tsp"},
+    for i in range(1, n + 1):
+        main_ingredient = random.choice(ingredient_names)
+        name = f"{random.choice(['Delicious','Tasty','Classic','Spicy','Sweet','Savory'])} {main_ingredient} Recipe {i}"
 
-    {"recipe": "Vegetable Stir Fry", "ingredient": "Onion", "quantity": "1", "unit": "pcs"},
-    {"recipe": "Vegetable Stir Fry", "ingredient": "Garlic", "quantity": "2", "unit": "cloves"},
-    {"recipe": "Vegetable Stir Fry", "ingredient": "Olive Oil", "quantity": "1", "unit": "tbsp"},
-    {"recipe": "Vegetable Stir Fry", "ingredient": "Salt", "quantity": "0.5", "unit": "tsp"},
-    {"recipe": "Vegetable Stir Fry", "ingredient": "Black Pepper", "quantity": "0.5", "unit": "tsp"},
+        picture = f"recipes/default.jpg"
 
-    {"recipe": "Chocolate Chip Cookies", "ingredient": "Flour", "quantity": "2.5", "unit": "cups"},
-    {"recipe": "Chocolate Chip Cookies", "ingredient": "Sugar", "quantity": "1", "unit": "cup"},
-    {"recipe": "Chocolate Chip Cookies", "ingredient": "Butter", "quantity": "1", "unit": "cup"},
-    {"recipe": "Chocolate Chip Cookies", "ingredient": "Eggs", "quantity": "2", "unit": "pcs"},
-    {"recipe": "Chocolate Chip Cookies", "ingredient": "Milk", "quantity": "2", "unit": "tbsp"},
-]
+        description = f"A {random.choice(['delicious','tasty','quick','easy','healthy','classic'])} recipe using {main_ingredient}."
+        method = f"Cook {random.randint(3,8)} ingredients step by step to make {name}."
 
-REVIEW_DATA = [
-    {
-        "rating": 5,
-        "description": "Absolutely delicious! The pancakes were fluffy and easy to make.",
-        "user": "jdoe",
-        "recipe": "Classic Pancakes",
-    },
-    {
-        "rating": 4,
-        "description": "Great flavor, but I added a bit more sugar to suit my taste.",
-        "user": "emilyd",
-        "recipe": "Classic Pancakes",
-    },
-    {
-        "rating": 5,
-        "description": "Healthy and filling. Perfect lunch option!",
-        "user": "jsmith",
-        "recipe": "Grilled Chicken Salad",
-    },
-    {
-        "rating": 3,
-        "description": "Good, but I think it needed more seasoning.",
-        "user": "mbrown",
-        "recipe": "Grilled Chicken Salad",
-    },
-    {
-        "rating": 5,
-        "description": "Rich and hearty. Tasted just like authentic Italian pasta.",
-        "user": "superadmin",
-        "recipe": "Spaghetti Bolognese",
-    },
-    {
-        "rating": 4,
-        "description": "Very tasty and easy to prepare. Will make again.",
-        "user": "jdoe",
-        "recipe": "Spaghetti Bolognese",
-    },
-    {
-        "rating": 4,
-        "description": "Quick and healthy dinner. Loved the freshness.",
-        "user": "emilyd",
-        "recipe": "Vegetable Stir Fry",
-    },
-    {
-        "rating": 2,
-        "description": "It was okay, but a bit bland for my liking.",
-        "user": "mbrown",
-        "recipe": "Vegetable Stir Fry",
-    },
-    {
-        "rating": 5,
-        "description": "These cookies were amazing! Soft and chewy.",
-        "user": "jsmith",
-        "recipe": "Chocolate Chip Cookies",
-    },
-    {
-        "rating": 4,
-        "description": "Very good recipe, turned out perfectly.",
-        "user": "jdoe",
-        "recipe": "Chocolate Chip Cookies",
-    },
-]
+        recipe_categories = random.sample(category_names, k=min(3, len(category_names)))
+
+        recipes.append({
+            "name": name,
+            "picture": picture,
+            "description": description,
+            "method": method,
+            "categories": recipe_categories
+        })
+
+        num_ingredients = random.randint(3,10)
+        selected_ingredients = random.sample(ingredient_names, k=min(num_ingredients, len(ingredient_names)))
+
+        for ing in selected_ingredients:
+            recipe_ingredients.append({
+                "ingredient": ing,
+                "recipe": name,
+                "quantity": str(random.randint(50, 500)),
+                "unit": random.choice(["g","ml","pcs","tbsp","tsp"])
+            })
+
+    return recipes, recipe_ingredients
+
+
+def generate_reviews(users_data, recipes_data, n_reviews=5000):
+ 
+    if not users_data or not recipes_data:
+        raise ValueError("users_data and recipes_data must be provided")
+
+    reviews = []
+
+    review_descriptions = [
+        "Amazing recipe, will cook again!",
+        "Pretty good, but could be better.",
+        "Loved it! My family enjoyed it.",
+        "Too spicy for my taste.",
+        "Perfect for quick meals.",
+        "Easy to follow and delicious.",
+        "Not bad, but needs more seasoning.",
+        "Absolutely fantastic!",
+        "Average taste, nothing special.",
+        "Super healthy and tasty!"
+    ]
+
+    for _ in range(n_reviews):
+        user = random.choice(users_data)
+        recipe = random.choice(recipes_data)
+
+        review = {
+            "user": user["nickname"],
+            "recipe": recipe["name"],
+            "description": random.choice(review_descriptions),
+            "rating": random.randint(1, 5)
+        }
+
+        reviews.append(review)
+
+    return reviews
+
+
+RECIPE_DATA, RECIPE_INGREDIENT_DATA = generate_recipes_with_existing_data(500, CATEGORY_DATA, INGREDIENT_DATA)
+
+REVIEW_DATA = generate_reviews(USER_DATA, RECIPE_DATA, 5000)
+
 
 
 def populate():

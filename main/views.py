@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
+from django.template.loader import render_to_string
+
 from django.urls import reverse
 
 from django.contrib.auth import authenticate, login, logout
@@ -28,12 +30,26 @@ def search(request):
     else:
         results = SearchQuerySet().all()
     
-    paginator = Paginator(results, 10)  # 10 results per page
-    page = paginator.get_page(page_number)
+    paginator = Paginator(results, 30)  # 10 results per page
+    try:
+        page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
     
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        html = render_to_string("main/results.html", {"page": page})
+        return JsonResponse({
+            "html": html,
+            "has_next": page.has_next(),
+            "next_page": page.next_page_number() if page.has_next() else None
+        })
+
     return render(request, 'main/search.html', {
         'query': query,
-        'page': page
+        'page': page,
+        'next_page': page.next_page_number() if page.has_next() else None
     })
 
 def home(request):
@@ -63,7 +79,14 @@ def view_recipe(request,recipe_slug):
     try:
         recipe = Recipe.objects.get(slug=recipe_slug)
         recipeIngredients = RecipeIngredients.objects.filter(recipe=recipe)
-        recipeReviews = Review.objects.filter(recipe=recipe)
+
+        sort_by = request.GET.get('sort', 'recent')
+
+        if sort_by == 'top':
+            recipeReviews = Review.objects.filter(recipe=recipe).order_by('-rating')
+        else:
+            recipeReviews = Review.objects.filter(recipe=recipe).order_by('-id')
+
         context_dict["recipe"] = recipe
         context_dict["reviews"] = recipeReviews
         context_dict["ingredients"] = recipeIngredients
@@ -165,3 +188,32 @@ def user_logout(request):
     return redirect(reverse('GUR:home'))
 
 
+@login_required
+def add_review(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+    except Recipe.DoesNotExist:
+        return redirect('GUR:home')
+
+    form = ReviewForm()
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.recipe = recipe
+            
+            profile = UserProfile.objects.get(user=request.user)
+            review.user = profile
+            
+            review.save()
+            return redirect('GUR:view_recipe', recipe_slug=recipe_slug)
+        else:
+            print(form.errors)
+
+    context_dict = {
+        'form': form,
+        'recipe': recipe,
+    }
+    
+    return render(request, 'main/add_review.html', context=context_dict)
