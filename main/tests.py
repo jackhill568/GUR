@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 
 from main.models import Category, Ingredient, Recipe, RecipeIngredients, Review, UserProfile
+from main.forms import RecipeForm
 
 # Create your tests here.
 
@@ -86,3 +87,45 @@ class HomeViewTests(TestCase):
 
     def test_home_recipe_of_week(self):
         pass
+
+### RECIPE TESTS ###
+class RecipeFormTest(TestCase):
+        def setup(self):
+            self.ingredient1 = Ingredient.objects.create(name="Chicken")
+            self.ingredient2 = Ingredient.objects.create(name="Salt")
+        
+        def test_recipe_form_valid(self):
+            form_data = {
+                'name': 'chicken recipe',
+                'description': 'test desc',
+                'method': 'test method',
+                'ingredients': [self.ingredient1.id, self.ingredient2.id]
+            }
+
+            form = RecipeForm(data=form_data)
+            self.assertTrue(form.is_valid())
+        
+        def test_recipe_form_invalid(self):
+            form_data = {
+                'name': '',
+                'description': '',
+                'method': '',
+            }
+
+            form = RecipeForm(data=form_data)
+            self.assertFalse(form.is_valid())
+        
+        def test_new_ingredient_creation(self):
+            form_data = {
+                'name': 'New Ingredient Recipe',
+                'description': 'Desc',
+                'method': 'Method',
+                'ingredients': ['Garlic']  # not in DB
+            }
+
+            form = RecipeForm(data=form_data)
+            self.assertTrue(form.is_valid())
+
+            recipe = form.save()
+            self.assertTrue(Ingredient.objects.filter(name='Garlic').exists())
+            self.assertEqual(recipe.ingredients.count(), 1)

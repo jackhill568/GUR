@@ -14,7 +14,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 from main.models import UserProfile, Recipe, RecipeIngredients, Ingredient, Review
-from main.forms import UserForm, UserProfileForm, RecipeForm
+from main.forms import ReviewForm, UserForm, UserProfileForm, RecipeForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
