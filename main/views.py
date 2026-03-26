@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
+from django.template.loader import render_to_string
+
 from django.urls import reverse
 
 from django.contrib.auth import authenticate, login, logout
@@ -26,12 +28,26 @@ def search(request):
     else:
         results = SearchQuerySet().all()
     
-    paginator = Paginator(results, 10)  # 10 results per page
-    page = paginator.get_page(page_number)
+    paginator = Paginator(results, 30)  # 10 results per page
+    try:
+        page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
     
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        html = render_to_string("main/results.html", {"page": page})
+        return JsonResponse({
+            "html": html,
+            "has_next": page.has_next(),
+            "next_page": page.next_page_number() if page.has_next() else None
+        })
+
     return render(request, 'main/search.html', {
         'query': query,
-        'page': page
+        'page': page,
+        'next_page': page.next_page_number() if page.has_next() else None
     })
 
 def home(request):

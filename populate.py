@@ -154,7 +154,7 @@ def generate_recipes_with_existing_data(n=500, categories_data=None, ingredients
         main_ingredient = random.choice(ingredient_names)
         name = f"{random.choice(['Delicious','Tasty','Classic','Spicy','Sweet','Savory'])} {main_ingredient} Recipe {i}"
 
-        picture = f"recipes/recipe_{i}.jpg"
+        picture = f"recipes/default.jpg"
 
         description = f"A {random.choice(['delicious','tasty','quick','easy','healthy','classic'])} recipe using {main_ingredient}."
         method = f"Cook {random.randint(3,8)} ingredients step by step to make {name}."
