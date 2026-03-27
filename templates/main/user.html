@@ -58,9 +58,10 @@
 				<ul>
 					{% for review in reviews|slice:":5" %}
 					<li>
-						Rating: {{ review.rating }} /5
-						Comment: {{ review.description }}
-						Written by: <a href="{% url 'GUR:view_user' profile.id %}">{{ review.user.user.username }}</a>
+						<span class="star-rating" style="--rating: {{ review.rating }};"></span>
+
+						{{ review.description }}
+					 	<a href="{% url 'GUR:view_recipe' review.recipe.slug %}">{{ review.recipe.name }}</a>
 					</li>
 				{% endfor %}
 				</ul>
