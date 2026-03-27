@@ -1,4 +1,3 @@
-// Simple cookie consent manager
 (function () {
   var COOKIE_NAME = 'gur_cookie_consent';
   var ONE_YEAR = 365 * 24 * 60 * 60; // seconds

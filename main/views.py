@@ -20,7 +20,6 @@ from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
 
 
-
 def search(request):
     query = request.GET.get('q', '')
     page_number = request.GET.get('page', 1)

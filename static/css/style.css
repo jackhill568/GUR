@@ -229,5 +229,5 @@ ul {
     width: calc(var(--rating) / var(--stars) * 100%);
     overflow: hidden;
     white-space: nowrap;
-    letter-spacing: 3px; /* match spacing with ::before */
+    letter-spacing: 3px; 
 }
