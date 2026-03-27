@@ -12,6 +12,10 @@ h1, h2, h3 {
     color: rgb(175, 56, 26);
 }
 
+ul {
+	list-style: none;
+}
+
 /* Sidebar Layout */
 .sidebar-wrapper {
     display: grid;
@@ -152,6 +156,7 @@ h1, h2, h3 {
 .search-input-container input[type="text"]{
     flex: 1;                
     padding: 8px 10px;
+    margin: 0 auto;
     border: 1px solid #ccc;
     font-size: 16px;
 }
@@ -194,4 +199,35 @@ h1, h2, h3 {
 
 #results * {
     box-sizing: border-box;
+}
+
+.star-rating {
+    --star-size: 24px;
+    --star-color: lightgray;
+    --star-fill: gold;
+    --stars: 5;
+
+    display: inline-block;
+    font-size: var(--star-size);
+    font-family: Times, serif; 
+    line-height: 1;
+    position: relative;
+}
+
+.star-rating::before {
+    content: "★★★★★"; 
+    color: var(--star-color);
+    letter-spacing: 3px;
+}
+
+.star-rating::after {
+    content: "★★★★★"; 
+    color: var(--star-fill);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--rating) / var(--stars) * 100%);
+    overflow: hidden;
+    white-space: nowrap;
+    letter-spacing: 3px; 
 }

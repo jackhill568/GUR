@@ -41,7 +41,6 @@ def admin_required(view_func):
     return _wrapped
 
 
-
 def search(request):
     query = request.GET.get('q', '')
     page_number = request.GET.get('page', 1)
@@ -238,7 +237,6 @@ def add_review(request, recipe_slug):
     }
     
     return render(request, 'main/add_review.html', context=context_dict)
-
 
 @admin_required
 def admin_dashboard(request):

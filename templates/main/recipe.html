@@ -86,7 +86,8 @@
 			
 			{% for review in reviews|slice:":5" %}
 			<li> 
-				Rating: {{ review.rating }} /5
+
+				<span class="star-rating" style="--rating: {{ review.rating }};"></span>
 				Comment: {{ review.description }}
 				Written by: <a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.user.username }}</a>
 				<div>
