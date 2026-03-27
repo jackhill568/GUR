@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 
 from main.models import Category, Ingredient, Recipe, RecipeIngredients, Review, UserProfile
+from main.forms import RecipeForm, ReviewForm
 
 # Create your tests here.
 
@@ -86,3 +87,70 @@ class HomeViewTests(TestCase):
 
     def test_home_recipe_of_week(self):
         pass
+
+### RECIPE TESTS ###
+class RecipeFormTest(TestCase):
+        def setup(self):
+            self.ingredient1 = Ingredient.objects.create(name="Chicken")
+            self.ingredient2 = Ingredient.objects.create(name="Salt")
+        
+        def test_recipe_form_valid(self):
+            form_data = {
+                'name': 'chicken recipe',
+                'description': 'test desc',
+                'method': 'test method',
+                'ingredients': [self.ingredient1.id, self.ingredient2.id]
+            }
+            form = RecipeForm(data=form_data)
+            self.assertTrue(form.is_valid())
+        
+        def test_recipe_form_invalid(self):
+            form_data = {
+                'name': '',
+                'description': '',
+                'method': '',
+            }
+            form = RecipeForm(data=form_data)
+            self.assertFalse(form.is_valid())
+        
+        def test_new_ingredient_creation(self):
+            form_data = {
+                'name': 'New Ingredient Recipe',
+                'description': 'Desc',
+                'method': 'Method',
+                'ingredients': ['Garlic']  # doesn't already exist
+            }
+            form = RecipeForm(data=form_data)
+            self.assertTrue(form.is_valid())
+            recipe = form.save()
+            self.assertTrue(Ingredient.objects.filter(name='Garlic').exists())
+            self.assertEqual(recipe.ingredients.count(), 1)
+
+### REVIEW TESTS ###
+class ReviewFormTest(TestCase):
+        def setUpUser(self):
+            self.test_user = User("test_person")
+        def test_review_form_valid(self):
+            form_data = {
+                'rating': '1',
+                'description': 'test desc - it was great',
+            }
+            form = ReviewForm(data=form_data)
+            self.assertTrue(form.is_valid())
+        
+        def test_review_form_invalid(self):
+            form_data = {
+                'rating': '',
+                'description': '',
+            }
+            form = ReviewForm(data=form_data)
+            self.assertFalse(form.is_valid())
+        
+        def test_review_form_exists(self):
+            form_data = {
+                'rating': '',
+                'description': '',
+            }
+            form = ReviewForm(data=form_data, user=self.test_user)
+            user_reviews = Review.objects.filter(user=self.test_user)
+            self.assertTrue(form in user_reviews)

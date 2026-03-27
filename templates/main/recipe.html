@@ -22,6 +22,27 @@
 		<br />
 		<img src="{{ MEDIA_URL }}images/{{ recipe.picture }}"
 				alt="Recipe Picture" />
+
+		<div style="margin-top:10px;">
+			{% if user.is_authenticated %}
+				<form method="post" action="{% url 'GUR:flag_recipe' recipe.slug %}" style="display:inline;">
+					{% csrf_token %}
+					<input type="hidden" name="next" value="{{ request.get_full_path }}" />
+					<button type="submit" class="profile-link-button">Flag Recipe</button>
+				</form>
+			{% endif %}
+			{% if user.is_authenticated and user.userprofile and user.userprofile.permission_level == 1 %}
+				<form method="post" action="{% url 'GUR:admin_resolve_recipe' recipe.slug %}" style="display:inline; margin-left:8px;">
+					{% csrf_token %}
+					<button type="submit" class="profile-link-button" onclick="return confirm('Clear all flags on this recipe?');">Resolve Flags</button>
+				</form>
+				<form method="post" action="{% url 'GUR:admin_delete_recipe' recipe.slug %}" style="display:inline; margin-left:8px;">
+					{% csrf_token %}
+					<button type="submit" class="profile-link-button" onclick="return confirm('Delete this recipe?');">Delete Recipe</button>
+				</form>
+			{% endif %}
+			<span style="margin-left:8px; font-size: 0.9em; color:#666;">Flags: {{ recipe.flags }}</span>
+		</div>
 		
 
 		<!-- ingredients -->
@@ -65,9 +86,30 @@
 			
 			{% for review in reviews|slice:":5" %}
 			<li> 
+
 				<span class="star-rating" style="--rating: {{ review.rating }};"></span>
-				{{ review.description }}
-				<a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.user.username }}</a>
+				Comment: {{ review.description }}
+				Written by: <a href="{% url 'GUR:view_user' review.user.id %}">{{ review.user.user.username }}</a>
+				<div>
+					{% if user.is_authenticated %}
+						<form method="post" action="{% url 'GUR:flag_review' review.id %}" style="display:inline;">
+							{% csrf_token %}
+							<input type="hidden" name="next" value="{{ request.get_full_path }}" />
+							<button type="submit" class="profile-link-button" style="margin-top:4px;">Flag Review</button>
+						</form>
+					{% endif %}
+					{% if user.is_authenticated and user.userprofile and user.userprofile.permission_level == 1 %}
+						<form method="post" action="{% url 'GUR:admin_resolve_review' review.id %}" style="display:inline;">
+							{% csrf_token %}
+							<button type="submit" class="profile-link-button" style="margin-top:4px;" onclick="return confirm('Clear flags on this review?');">Resolve</button>
+						</form>
+						<form method="post" action="{% url 'GUR:admin_delete_review' review.id %}" style="display:inline;">
+							{% csrf_token %}
+							<button type="submit" class="profile-link-button" style="margin-top:4px;" onclick="return confirm('Delete this review?');">Delete Review</button>
+						</form>
+					{% endif %}
+					<span style="margin-left:8px; font-size: 0.85em; color:#666;">Flags: {{ review.flags }}</span>
+				</div>
 			</li>
 			{% endfor %}
 		{% else %}
