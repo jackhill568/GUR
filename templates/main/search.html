@@ -9,18 +9,12 @@
 
 {% block body_block %}
 	
-
-<form method="get" action="{% url 'GUR:search' %}">
-		<table>
-    		<tr>
-        		<td>Search:</td>
-        		<td><input type="text" name="q" value="{{ query }}"></td>
-    		</tr>
-    		<tr>
-    		    <td>&nbsp;</td>
-    		    <td><input type="submit" value="Search"></td>
-    		</tr>
-		</table>
+<h2> Search</h2>
+<form class="search-bar" method="get" action="{% url 'GUR:search' %}">
+		<div class="seach-input-container">
+        	<input type="text" name="q" value="{{ query }}">
+    		<input type="submit" value="Search">
+		</div>
         {% if query %}
             <h3>Results</h3>
 						<div id="results">

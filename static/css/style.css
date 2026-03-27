@@ -141,3 +141,57 @@ h1, h2, h3 {
 .cookie-banner__button:hover {
     background-color: rgb(175, 56, 26);
 }
+
+.search-bar {
+	max-width: 600px;
+    margin: 40px;
+    padding: 20px 30px;
+    background-color: #fff;
+}
+
+.search-input-container input[type="text"]{
+    flex: 1;                
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.search-input-container input[type="submit"] {
+    padding: 8px 15px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 1px; 
+}
+
+.search-input-container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+#results {
+    list-style-type: none; 
+    padding: 0;
+    margin: 10px 0 0 0;
+	width: auto;
+	text-align: left;
+}
+
+#results li {
+    margin: 10px 0;
+    padding: 10px;
+	display: block;
+}
+
+#results li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+#results li a:hover {
+    color: #0056b3;
+}
+
+#results * {
+    box-sizing: border-box;
+}

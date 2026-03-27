@@ -69,8 +69,25 @@
 			{% endif %}
 
 			{% if user.is_authenticated %}
-				Report
+				<form method="post" action="{% url 'GUR:flag_user' profile.id %}">
+					{% csrf_token %}
+					<input type="hidden" name="next" value="{{ request.get_full_path }}" />
+					<button type="submit" class="profile-link-button">Flag Profile</button>
+				</form>
 			{% endif %}
+
+			{% if user.is_authenticated and user.userprofile and user.userprofile.permission_level == 1 %}
+				<form method="post" action="{% url 'GUR:admin_resolve_user' profile.id %}" style="margin-top:6px;">
+					{% csrf_token %}
+					<button type="submit" class="profile-link-button" onclick="return confirm('Clear all flags on this user?');">Resolve Flags</button>
+				</form>
+				<form method="post" action="{% url 'GUR:admin_delete_user' profile.id %}" style="margin-top:6px;">
+					{% csrf_token %}
+					<button type="submit" class="profile-link-button" onclick="return confirm('Delete this user profile and their account?');">Delete User</button>
+				</form>
+			{% endif %}
+
+			<p style="margin-top:6px; font-size: 0.9em; color:#666;">Flags: {{ profile.flags }}</p>
 		</div>
 
 	{% else %}

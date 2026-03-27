@@ -1,0 +1,124 @@
+{% extends 'main/base.html' %}
+
+{% block title_block %}
+Moderation
+{% endblock %}
+
+{% block body_block %}
+<h1>Moderation Dashboard</h1>
+
+<div style="margin: 10px 0;">
+  {% if only_flagged %}
+    <a href="?">Show all</a>
+  {% else %}
+    <a href="?flagged=1">Show only flagged</a>
+  {% endif %}
+  {% if only_flagged %}<span style="margin-left:8px; color:#666;">(only flagged)</span>{% endif %}
+</div>
+
+<h2>Flagged Recipes</h2>
+{% if recipe_page %}
+  <ul>
+    {% for r in recipe_page %}
+      <li>
+        <a href="{% url 'GUR:view_recipe' r.slug %}">{{ r.name }}</a>
+        — Flags: {{ r.flags }}
+        {% if r.flags > 0 %}
+        <form method="post" action="{% url 'GUR:admin_resolve_recipe' r.slug %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Clear all flags on this recipe?');">Resolve</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{% url 'GUR:admin_delete_recipe' r.slug %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Delete this recipe?');">Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if recipe_page.has_other_pages %}
+  <div class="pagination">
+    {% if recipe_page.has_previous %}
+      <a href="?recipe_page={{ recipe_page.previous_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if review_page.number != 1 %}&review_page={{ review_page.number }}{% endif %}{% if user_page.number != 1 %}&user_page={{ user_page.number }}{% endif %}">&laquo; Prev</a>
+    {% endif %}
+    <span>Page {{ recipe_page.number }} of {{ recipe_page.paginator.num_pages }}</span>
+    {% if recipe_page.has_next %}
+      <a href="?recipe_page={{ recipe_page.next_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if review_page.number != 1 %}&review_page={{ review_page.number }}{% endif %}{% if user_page.number != 1 %}&user_page={{ user_page.number }}{% endif %}">Next &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+{% else %}
+  <p>No recipes found.</p>
+{% endif %}
+
+<h2>Flagged Reviews</h2>
+{% if review_page %}
+  <ul>
+    {% for rv in review_page %}
+      <li>
+        {{ rv.user.user.username }} on <a href="{% url 'GUR:view_recipe' rv.recipe.slug %}">{{ rv.recipe.name }}</a>
+        — Rating: {{ rv.rating }} — Flags: {{ rv.flags }}
+        {% if rv.flags > 0 %}
+        <form method="post" action="{% url 'GUR:admin_resolve_review' rv.id %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Clear all flags on this review?');">Resolve</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{% url 'GUR:admin_delete_review' rv.id %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Delete this review?');">Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if review_page.has_other_pages %}
+  <div class="pagination">
+    {% if review_page.has_previous %}
+      <a href="?review_page={{ review_page.previous_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if recipe_page.number != 1 %}&recipe_page={{ recipe_page.number }}{% endif %}{% if user_page.number != 1 %}&user_page={{ user_page.number }}{% endif %}">&laquo; Prev</a>
+    {% endif %}
+    <span>Page {{ review_page.number }} of {{ review_page.paginator.num_pages }}</span>
+    {% if review_page.has_next %}
+      <a href="?review_page={{ review_page.next_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if recipe_page.number != 1 %}&recipe_page={{ recipe_page.number }}{% endif %}{% if user_page.number != 1 %}&user_page={{ user_page.number }}{% endif %}">Next &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+{% else %}
+  <p>No reviews found.</p>
+{% endif %}
+
+<h2>Flagged Users</h2>
+{% if user_page %}
+  <ul>
+    {% for u in user_page %}
+      <li>
+        <a href="{% url 'GUR:view_user' u.id %}">{{ u.user.username }}</a>
+        — Flags: {{ u.flags }}
+        {% if u.flags > 0 %}
+        <form method="post" action="{% url 'GUR:admin_resolve_user' u.id %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Clear all flags on this user?');">Resolve</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{% url 'GUR:admin_delete_user' u.id %}" style="display:inline; margin-left:4px;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Delete this user and their content?');">Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if user_page.has_other_pages %}
+  <div class="pagination">
+    {% if user_page.has_previous %}
+      <a href="?user_page={{ user_page.previous_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if recipe_page.number != 1 %}&recipe_page={{ recipe_page.number }}{% endif %}{% if review_page.number != 1 %}&review_page={{ review_page.number }}{% endif %}">&laquo; Prev</a>
+    {% endif %}
+    <span>Page {{ user_page.number }} of {{ user_page.paginator.num_pages }}</span>
+    {% if user_page.has_next %}
+      <a href="?user_page={{ user_page.next_page_number }}{% if only_flagged %}&flagged=1{% endif %}{% if recipe_page.number != 1 %}&recipe_page={{ recipe_page.number }}{% endif %}{% if review_page.number != 1 %}&review_page={{ review_page.number }}{% endif %}">Next &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+{% else %}
+  <p>No users found.</p>
+{% endif %}
+
+{% endblock %}
