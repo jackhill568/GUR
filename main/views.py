@@ -7,17 +7,38 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Avg
+from django.db.models import Avg, F
 
 from datetime import timedelta
 
 from django.utils import timezone
 
-from main.models import UserProfile, Recipe, RecipeIngredients, Ingredient, Review
-from main.forms import UserForm, UserProfileForm, RecipeForm
+from main.models import UserProfile, Recipe, RecipeIngredients, Ingredient, Review, Flag
+from main.forms import UserForm, UserProfileForm, RecipeForm, ReviewForm
 
 from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator
+from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError, transaction
+from django.views.decorators.http import require_POST
+
+
+def _is_admin(user) -> bool:
+    if not user.is_authenticated:
+        return False
+    try:
+        profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return False
+    return profile.permission_level == 1
+
+
+def admin_required(view_func):
+    def _wrapped(request, *args, **kwargs):
+        if not _is_admin(request.user):
+            return redirect('GUR:home')
+        return view_func(request, *args, **kwargs)
+    return _wrapped
 
 
 
@@ -217,3 +238,218 @@ def add_review(request, recipe_slug):
     }
     
     return render(request, 'main/add_review.html', context=context_dict)
+
+
+@admin_required
+def admin_dashboard(request):
+    only_flagged = request.GET.get('flagged') in ('1', 'true', 'True')
+    per_page = 10
+
+    recipe_qs = Recipe.objects
+    review_qs = Review.objects
+    user_qs = UserProfile.objects
+
+    if only_flagged:
+        recipe_qs = recipe_qs.filter(flags__gt=0)
+        review_qs = review_qs.filter(flags__gt=0)
+        user_qs = user_qs.filter(flags__gt=0)
+
+    recipe_paginator = Paginator(recipe_qs.order_by('-flags', '-date'), per_page)
+    review_paginator = Paginator(review_qs.order_by('-flags', '-id'), per_page)
+    user_paginator = Paginator(user_qs.order_by('-flags', 'user__username'), per_page)
+
+    recipe_page = recipe_paginator.get_page(request.GET.get('recipe_page'))
+    review_page = review_paginator.get_page(request.GET.get('review_page'))
+    user_page = user_paginator.get_page(request.GET.get('user_page'))
+
+    return render(request, 'main/admin_dashboard.html', context={
+        'recipe_page': recipe_page,
+        'review_page': review_page,
+        'user_page': user_page,
+        'only_flagged': only_flagged,
+    })
+
+
+@admin_required
+@require_POST
+def admin_delete_recipe(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+        # Clean up flags for this object
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(Recipe)
+        Flag.objects.filter(content_type=ct, object_id=recipe.pk).delete()
+        recipe.delete()
+    except Recipe.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_delete_review(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(Review)
+        Flag.objects.filter(content_type=ct, object_id=review.pk).delete()
+        review.delete()
+    except Review.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_delete_user(request, user_id):
+    try:
+        profile = UserProfile.objects.get(id=user_id)
+        # Deleting profile cascades to recipes/reviews via FK relationships
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(UserProfile)
+        Flag.objects.filter(content_type=ct, object_id=profile.pk).delete()
+        profile.user.delete()
+    except UserProfile.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_recipe_flags(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(Recipe)
+        Flag.objects.filter(content_type=ct, object_id=recipe.pk).delete()
+        Recipe.objects.filter(pk=recipe.pk).update(flags=0)
+    except Recipe.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_review_flags(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(Review)
+        Flag.objects.filter(content_type=ct, object_id=review.pk).delete()
+        Review.objects.filter(pk=review.pk).update(flags=0)
+    except Review.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_user_flags(request, user_id):
+    try:
+        profile = UserProfile.objects.get(id=user_id)
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(UserProfile)
+        Flag.objects.filter(content_type=ct, object_id=profile.pk).delete()
+        UserProfile.objects.filter(pk=profile.pk).update(flags=0)
+    except UserProfile.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_recipe(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+        ct = ContentType.objects.get_for_model(Recipe)
+        Flag.objects.filter(content_type=ct, object_id=recipe.pk).delete()
+        recipe.flags = 0
+        recipe.save()
+    except Recipe.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_review(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+        ct = ContentType.objects.get_for_model(Review)
+        Flag.objects.filter(content_type=ct, object_id=review.pk).delete()
+        review.flags = 0
+        review.save()
+    except Review.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@admin_required
+@require_POST
+def admin_resolve_user(request, user_id):
+    try:
+        profile = UserProfile.objects.get(id=user_id)
+        ct = ContentType.objects.get_for_model(UserProfile)
+        Flag.objects.filter(content_type=ct, object_id=profile.pk).delete()
+        profile.flags = 0
+        profile.save()
+    except UserProfile.DoesNotExist:
+        pass
+    return redirect('GUR:admin_dashboard')
+
+
+@login_required
+@require_POST
+def flag_recipe(request, recipe_slug):
+    try:
+        recipe = Recipe.objects.get(slug=recipe_slug)
+        profile = UserProfile.objects.get(user=request.user)
+        ct = ContentType.objects.get_for_model(Recipe)
+        try:
+            with transaction.atomic():
+                Flag.objects.create(user=profile, content_type=ct, object_id=recipe.pk)
+                Recipe.objects.filter(pk=recipe.pk).update(flags=F('flags') + 1)
+        except IntegrityError:
+            pass
+    except Recipe.DoesNotExist:
+        pass
+    next_url = request.POST.get('next') or recipe.get_absolute_url() if 'recipe' in locals() else reverse('GUR:home')
+    return redirect(next_url)
+
+
+@login_required
+@require_POST
+def flag_review(request, review_id):
+    try:
+        review = Review.objects.get(id=review_id)
+        profile = UserProfile.objects.get(user=request.user)
+        ct = ContentType.objects.get_for_model(Review)
+        try:
+            with transaction.atomic():
+                Flag.objects.create(user=profile, content_type=ct, object_id=review.pk)
+                Review.objects.filter(pk=review.pk).update(flags=F('flags') + 1)
+        except IntegrityError:
+            pass
+        next_url = request.POST.get('next') or review.get_absolute_url()
+    except Review.DoesNotExist:
+        next_url = reverse('GUR:home')
+    return redirect(next_url)
+
+
+@login_required
+@require_POST
+def flag_user(request, user_id):
+    try:
+        profile = UserProfile.objects.get(id=user_id)
+        flagger = UserProfile.objects.get(user=request.user)
+        ct = ContentType.objects.get_for_model(UserProfile)
+        try:
+            with transaction.atomic():
+                Flag.objects.create(user=flagger, content_type=ct, object_id=profile.pk)
+                UserProfile.objects.filter(pk=profile.pk).update(flags=F('flags') + 1)
+        except IntegrityError:
+            pass
+        next_url = request.POST.get('next') or profile.get_absolute_url()
+    except UserProfile.DoesNotExist:
+        next_url = reverse('GUR:home')
+    return redirect(next_url)
