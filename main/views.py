@@ -142,7 +142,7 @@ def add_recipe(request):
             raw_ingredients = request.POST.getlist('ingredients')
             for name in raw_ingredients:
                 ingredient, created = Ingredient.objects.get_or_create(name=name)
-                recipe.ingredients.add(ingredient)
+                recipe.ingredients.set(ingredient)
             return redirect('GUR:home')
     else:
         recipe_form = RecipeForm()
